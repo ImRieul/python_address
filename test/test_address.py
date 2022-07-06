@@ -11,12 +11,12 @@ class AddressGetTest(unittest.TestCase):
         address = Address(query='대전 서구 둔산로 100')
         self.assertEqual(address.data.status_code, 200)
 
-    def test_not_find(self):  # 200, 값을 찾을 수 없는 경우
+    def test_OK_not_find(self):  # 200, 값을 찾을 수 없는 경우
         address = Address(query='커피한잔할래요')
         self.assertEqual(len(address.data.json().get('documents')), 0)
 
     # 4xx
-    def test_empty(self):  # 400, bed request
+    def test_bed_request(self):  # 400, bed request
         address = Address()
         self.assertEqual(address.data.status_code, 400)
 

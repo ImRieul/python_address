@@ -18,11 +18,17 @@ class Address:
         # return self.data
 
     def __get_address(self):
-        if self.data is None:
-            self.address = None
-        elif self.data.status_code == 400:
-            self.address = None
-        elif len(self.data.json()['documents']) != 0:  # 값을 찾았을 때
-            self.address = self.data.json()['documents'][0]['address']
-            self.road_address = self.data.json()['documents'][0]['road_address']
-        # return self.address
+        try:
+            if len(self.data.json()['documents']) != 0:  # 값을 찾았을 때
+                self.address = self.data.json()['documents'][0]['address']
+                self.road_address = self.data.json()['documents'][0]['road_address']
+        except Exception as e:
+            pass
+
+
+if __name__ == '__main__':
+    search = '대전 서구 둔산로 100'
+    address = Address(query=search)
+    print(address.data)
+    print(address.address)
+    print(address.road_address)
