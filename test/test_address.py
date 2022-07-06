@@ -1,7 +1,22 @@
 import unittest
 
-from main.address import Address
+from main.address import *
+from error.error_address import *
 import setting
+
+
+class AddressCheckAnalyzeType(unittest.TestCase):
+    def test_address_analyze_type_error(self):
+        query = '대전 서구 둔산로 100'
+        analyze = 'exact'
+        with self.assertRaises(AddressAnalyzeTypeError):
+            Address(query=query, analyze_type=analyze)
+
+    # def test_exact(self):
+    #     query = '대전 서구 둔산로 100 서울시청'
+    #     analyze = AnalyzeType.EXACT
+    #     address = Address(query=query, analyze_type=analyze)
+    #     self.assertEqual(len(address.data.json().get('documents')), 0)
 
 
 class AddressGetTest(unittest.TestCase):
