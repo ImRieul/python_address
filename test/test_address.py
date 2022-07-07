@@ -12,11 +12,17 @@ class AddressCheckAnalyzeType(unittest.TestCase):
         with self.assertRaises(AddressAnalyzeTypeError):
             Address(query=query, analyze_type=analyze)
 
-    # def test_exact(self):
-    #     query = '대전 서구 둔산로 100 서울시청'
-    #     analyze = AnalyzeType.EXACT
-    #     address = Address(query=query, analyze_type=analyze)
-    #     self.assertEqual(len(address.data.json().get('documents')), 0)
+    def test_exact(self):
+        query = '대전 서구 둔산로 100 서울시청'
+        analyze_type = AnalyzeType.EXACT
+        address = Address(query=query, analyze_type=analyze_type)
+        self.assertEqual(len(address.data.json().get('documents')), 0)
+
+    def test_similar(self):
+        query = '대전 서구 둔산로 100 서울시청'
+        analyze_type = AnalyzeType.SIMILAR
+        address = Address(query=query, analyze_type=analyze_type)
+        self.assertEqual(len(address.data.json().get('documents')), 1)
 
 
 class AddressGetTest(unittest.TestCase):

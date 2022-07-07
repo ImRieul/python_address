@@ -31,7 +31,7 @@ class Address:
             self.query[analyze_type] = self.query[analyze_type].value
 
     def __get_data(self):
-        request_url = '?' + ''.join([i + '=' + self.query[i] + '/' for i in self.query])[:-1]
+        request_url = '?' + ''.join([i + '=' + self.query[i] + '&' for i in self.query])[:-1]
         self.data = requests.get(self.url + request_url, headers={'Authorization': setting.KAKAO_TOKEN})
         # return self.data
 
@@ -47,11 +47,3 @@ class Address:
 class AnalyzeType(Enum):
     EXACT = 'exact'
     SIMILAR = 'similar'
-
-
-if __name__ == '__main__':
-    search = '대전 서구 둔산로 100'
-    address = Address(query=search)
-    print(address.data)
-    print(address.address)
-    print(address.road_address)
