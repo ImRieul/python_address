@@ -42,7 +42,6 @@ class ExcelFileTest(unittest.TestCase):
         self.assertEqual(excel.get_file_name(), test_file_name)
 
 
-# class ExcelGetSheetName(unittest.TestCase):
 class ExcelSheetTest(unittest.TestCase):
     # get_sheet_name
     def test_get_sheet_name__active(self):
@@ -71,6 +70,8 @@ class ExcelSheetTest(unittest.TestCase):
         sheet_name = 'Hello python'
         self.assertFalse(sheet_name in excel.get_sheet_names())
 
+    def test_active_sheet__name_None(self):
+        self.assertEqual(excel.get_sheet_active())
 
 if __name__ == '__main__':
     unittest.main()

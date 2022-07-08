@@ -23,18 +23,20 @@ class Excel:
             raise ExcelFileNameTypeError
         try:
             self.workbook = openpyxl.load_workbook(file_path)
+            self.sheet_name = self.workbook.active.title
         except FileNotFoundError as e:
             if self.__read_only:
                 raise e
             openpyxl.Workbook().save(file_path)
             self.workbook = openpyxl.load_workbook(file_path)
+            self.sheet_name = self.workbook.active.title
 
     def get_file_name(self):
         return self.__name
 
     def get_sheet_name(self, name=None):
         if name is not None and not isinstance(name, str):
-            raise ExcelSheetNameTypeErrors
+            raise ExcelSheetNameTypeError
         elif name is None:
             return self.workbook.active.title
         else:
@@ -48,7 +50,7 @@ class Excel:
         self.workbook.active.title = name
         self.workbook.save(self.__name)
 
-    def get_active_sheet(self, name=None):
+    def get_sheet_active(self, name=None):
         return self.workbook.active\
                 if name is not None else self.workbook[name]\
                 if type(name, str) else None
