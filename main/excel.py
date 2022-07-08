@@ -43,6 +43,9 @@ class Excel:
         self.workbook.active.title = name
         self.workbook.save(self.__name)
 
+    def get_active_sheet(self, name=None):
+        return self.workbook.active if name is not None else self.workbook[name] if type(name, str) else None
+
 
 if __name__ == '__main__':
     def function():
