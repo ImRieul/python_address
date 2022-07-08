@@ -5,19 +5,22 @@ from main.excel import *
 from error.error_excel import *
 
 # os.chdir('../')
-test_excel_file_name = 'sample.xlsx'
-excel = Excel(test_excel_file_name)
+test_file_name = 'sample.xlsx'
+test_not_file_name = 'Hello python'
+excel = Excel(test_file_name)
 
 
 class ExcelReadExcelTest(unittest.TestCase):
     def test_exist(self):
-        self.assertEqual(excel.get_excel_name(), test_excel_file_name)
+        self.assertEqual(excel.get_file_name(), test_file_name)
 
     def test_not_exist(self):
         excel_not_exist_name = 'not_exist_file.xlsx'
         excel_not_exist = Excel(excel_not_exist_name)
-        self.assertEqual(excel_not_exist.get_excel_name(), excel_not_exist_name)
-        os.remove(setting.ROOT_PROJECT + f'/{excel_not_exist_name}')
+        self.assertEqual(excel_not_exist.get_file_name(), excel_not_exist_name)
+        os.remove(f'{setting.ROOT_PROJECT}/{excel_not_exist_name}'
+                  if platform.system() != 'Windows'
+                  else f'{setting.ROOT_PROJECT}\\{excel_not_exist_name}')
 
     def test_not_exist_read_only(self):
         excel_not_exist_name = 'not_exist_file.xlsx'
@@ -31,28 +34,42 @@ class ExcelReadExcelTest(unittest.TestCase):
             Excel(test_func)
 
 
-class ExcelGetSheetName(unittest.TestCase):
-    def test_default(self):
-        sheet_name = excel.get_sheet_name()
-        self.assertEqual(sheet_name, 'data')
+class ExcelFileTest(unittest.TestCase):
+    def test_not_equal_name(self):
+        self.assertEqual(excel.get_file_name(), test_file_name)
 
-    def test_input_exist(self):
+    def test_equal_name(self):
+        self.assertEqual(excel.get_file_name(), test_file_name)
+
+
+# class ExcelGetSheetName(unittest.TestCase):
+class ExcelSheetTest(unittest.TestCase):
+    # get_sheet_name
+    def test_get_sheet_name__active(self):
+        sheet_input_name = 'data'
+        sheet_name = excel.get_sheet_name()
+        self.assertEqual(sheet_name, sheet_input_name)
+
+    def test_get_sheet_name__exist(self):
         sheet_input_name = 'data'
         sheet_name = excel.get_sheet_name(sheet_input_name)
         self.assertEqual(sheet_name, sheet_input_name)
 
-    def test_input_not_exist(self):
+    def test_get_sheet_name__not_exist(self):
         sheet_input_name = 'hello python'
         with self.assertRaises(KeyError):
             excel.get_sheet_name(sheet_input_name)
 
+    # get_sheet_names
+    def test_get_sheet_names__not_type(self):
+        self.assertNotIsInstance(excel.get_sheet_names(), str)
 
-# class ExcelSetSheetName(unittest.TestCase):
-#     def test_empty_name(self):
-#         excel = Excel(test_excel_file_name)
-#         sheet_name = excel.get_sheet_name()
-#
-#         excel.set_sheet_name('with_test')
+    def test_get_sheet_names__in_sheet(self):
+        self.assertIsInstance(excel.get_sheet_names(), list)
+
+    def test_get_sheet_names__in_not_sheet(self):
+        sheet_name = 'Hello python'
+        self.assertFalse(sheet_name in excel.get_sheet_names())
 
 
 if __name__ == '__main__':
