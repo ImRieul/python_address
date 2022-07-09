@@ -1,64 +1,40 @@
-import openpyxl
+from __future__ import annotations
+
+import pandas
 import platform
 
-# openpyxl는 직관성이 떨어져 읽기 쉬운 방식으로 만들어봤다.
 import setting
-from error.error_excel import *
 
 
+# 만들고 싶은 기능
+# 엑셀 읽기, 쓰기
 class Excel:
-    def __init__(self, name, read_only=False):
+    def __init__(self, name: str, sheet_name: str | None = None,
+                 index_row: int | None = 0, index_col: int | None = 0):
         self.__name = name
-        self.__read_only = read_only
-        self.workbook = None
+        self.__sheet_name = sheet_name
+        self.__index_row = index_row
+        self.__index_col = index_col
+        self.sheet = None
 
         self.__read_excel()
 
     def __read_excel(self):
-        file_path = f'{setting.ROOT_PROJECT}/{self.__name}'\
-                    if platform.system() != 'Windows'\
-                    else f'{setting.ROOT_PROJECT}\\{self.__name}'
+        platform_path = f'{setting.ROOT_PROJECT}\\{self.__name}' if platform.system() == 'Windows' else\
+                        f'{setting.ROOT_PROJECT}/{self.__name}'
 
-        if not isinstance(self.__name, str):
-            raise ExcelFileNameTypeError
-        try:
-            self.workbook = openpyxl.load_workbook(file_path)
-            self.sheet_name = self.workbook.active.title
-        except FileNotFoundError as e:
-            if self.__read_only:
-                raise e
-            openpyxl.Workbook().save(file_path)
-            self.workbook = openpyxl.load_workbook(file_path)
-            self.sheet_name = self.workbook.active.title
-
-    def get_file_name(self):
-        return self.__name
-
-    def get_sheet_name(self, name=None):
-        if name is not None and not isinstance(name, str):
-            raise ExcelSheetNameTypeError
-        elif name is None:
-            return self.workbook.active.title
+        if self.__sheet_name is None:
+            self.sheet = pandas.read_excel(platform_path,
+                                           header=self.__index_row,
+                                           index_col=self.__index_col)
         else:
-            return self.workbook[name].title
-
-    def get_sheet_names(self):
-        return self.workbook.sheetnames
-
-    def set_sheet_name(self, name=None):
-        # if
-        self.workbook.active.title = name
-        self.workbook.save(self.__name)
-
-    def get_sheet_active(self, name=None):
-        return self.workbook.active\
-                if name is not None else self.workbook[name]\
-                if type(name, str) else None
+            self.sheet = pandas.read_excel(platform_path,
+                                           sheet_name=self.__sheet_name,
+                                           header=self.__index_row,
+                                           index_col=self.__index_col)
 
 
 if __name__ == '__main__':
-    def function():
-        pass
-    # os.chdir('../')
-    excel = Excel('sample.xlsx')
-    excel.get_sheet_name(function)
+    # xls, xlsx FileNotFoundError
+    excel = Excel('sample.xlsx', index_row=1)
+    print(excel.sheet)

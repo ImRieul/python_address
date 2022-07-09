@@ -12,6 +12,7 @@
 
 * requests
 * openpyxl
+* pandas
 
 
 ### setting.py
