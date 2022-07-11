@@ -50,6 +50,11 @@ class NewExcel(unittest.TestCase):
         with self.assertRaises(IndexError):
             excel = Excel(file_exist, index_col=10000)
 
+    # index_row -> index_col
+    def test_read_excel__in_not_index_row_col(self):
+        with self.assertRaises(ValueError):
+            excel = Excel(file_exist, index_row=10000, index_col=10000)
+
 
 if __name__ == '__main__':
     unittest.main()

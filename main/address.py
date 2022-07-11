@@ -47,3 +47,9 @@ class Address:
 class AnalyzeType(Enum):
     EXACT = 'exact'
     SIMILAR = 'similar'
+
+
+if __name__ == '__main__':
+    address = Address(query='대전 서구 관저로 3-8')
+    print(address.road_address)
+    print(address.address)
