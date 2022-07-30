@@ -1,7 +1,7 @@
 import setting
 import requests
 from error.error_address import *
-from main.address.enum import AnalyzeType, AddressType
+from main.address.enum import *
 
 
 class Address:
@@ -11,8 +11,7 @@ class Address:
         self.query = query
         self.analyze_type = analyze_type
         self.__data = None  # response
-        self.__search_type = AddressType.NOT_EXIST  # 지번 주소만 있는지, 도로명 주소도 있는지 여부
-        # 위에 변수들은 나중에 get 메서드를 사용하도록 해야겠다.
+        self.__search_type = AddressSearchType.NOT_EXIST
 
         # 변수 값 할당 메서드
         self.__response()
@@ -26,31 +25,34 @@ class Address:
 
     def __set_search_type(self):
         if self.__data.get('documents') is None:
-            self.__search_type = AddressType.BED_REQUEST
+            self.__search_type = AddressSearchType.BED_REQUEST
         elif len(self.__data.get('documents')) == 0:
-            self.__search_type = AddressType.NOT_EXIST
-        elif self.__data.get('documents')[0]['address_type'] == 'REGION_ADDR':
-            self.__search_type = AddressType.REGION_ADDR
-        elif self.__data.get('documents')[0]['address_type'] == 'ROAD_ADDR':
-            self.__search_type = AddressType.ROAD_ADDR
+            self.__search_type = AddressSearchType.NOT_EXIST
+        elif self.__data.get('documents')[0].get('road_address') is None:
+            self.__search_type = AddressSearchType.REGION_ADDR
+        elif self.__data.get('documents')[0].get('road_address') is not None:
+            self.__search_type = AddressSearchType.ROAD_ADDR
+
+    def is_search_type(self, *types: AddressSearchType):
+        return self.__search_type in types
 
     def get_search_type(self):
         return self.__search_type
 
-    # 지번 주소 전부
-    def get_address_name(self, key: str = 'address_name'):
-        return self.__data['documents'][0]['address'][key] if self.__search_type != AddressType.NOT_EXIST else ''
+    def get_address_name(self, key: AddressEnum = AddressEnum.ADDRESS_NAME):
+        return self.__data['documents'][0]['address'][key.value]\
+            if self.is_search_type(AddressSearchType.ROAD_ADDR, AddressSearchType.REGION_ADDR) else ''
 
-    # 도로명 주소 전부
-    def get_road_address_name(self, key: str = 'address_name'):
-        return self.__data['documents'][0]['road_address'][key] if self.__search_type == AddressType.ROAD_ADDR else ''
+    def get_road_address_name(self, key: RoadAddressEnum = RoadAddressEnum.ADDRESS_NAME):
+        return self.__data['documents'][0]['road_address'][key.value]\
+            if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
 
     def get_road_address_fullname(self):
         fullname = f"{self.get_road_address_name()} " \
-                   f"({self.get_road_address_name('region_3depth_name')}"
-        fullname += f", {self.get_road_address_name('building_name')})" \
-            if self.get_road_address_name('building_name') != '' else ')'
-        return fullname
+                   f"({self.get_road_address_name(RoadAddressEnum.REGION_3DEPTH_NAME)}"
+        fullname += f", {self.get_road_address_name(RoadAddressEnum.BUILDING_NAME)})" \
+            if self.get_road_address_name(RoadAddressEnum.BUILDING_NAME) != '' else ')'
+        return fullname if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
 
 
 if __name__ == '__main__':

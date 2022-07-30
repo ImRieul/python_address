@@ -10,11 +10,11 @@ import setting
 # 엑셀 읽기, 쓰기
 class Excel:
     def __init__(self, name: str, sheet_name: str | None = None,
-                 index_row: int | None = 0, index_col: int | None = 0):
+                 index_row: int | None = 1, index_col: int | None = 1):
         self.__name = name
         self.__sheet_name = sheet_name
-        self.__index_row = index_row
-        self.__index_col = index_col
+        self.__index_row = index_row - 1 if index_row < 1 else 1
+        self.__index_col = index_col - 1 if index_col < 1 else 1
         self.__path = f'{setting.ROOT_PROJECT}\\' if platform.system() == 'Windows' else \
             f'{setting.ROOT_PROJECT}/'
         self.sheet = None

@@ -3,3 +3,5 @@ sample.xlsx
 
 .idea/find_address.iml
 ~$sample.xlsx
+__pycache__/
+*.pyc
