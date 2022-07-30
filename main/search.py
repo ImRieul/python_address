@@ -53,6 +53,8 @@ def search_yourself(fail_address: address.Address):
 #         '법정동코드': ''
 #     }
 
+# def imsi(value, search_to_list)
+
 
 if __name__ == '__main__':
     # file_name = 'sample.xlsx'
@@ -74,23 +76,20 @@ if __name__ == '__main__':
                 result = address.Address(query=query)
 
                 # 지번 주소
-                address_col_save = result.address['address_name']
+                address_col_save = result.get_address_name()
                 address_col.append(address_col_save)
 
                 # 도로명 주소
-                road_address_col_save = f"{result.road_address['address_name']} " \
-                                        f"({result.address['region_3depth_name']}"
-                road_address_col_save += f", {result.road_address['building_name']})" if result.road_address[
-                                                                                             'building_name'] != '' else ')'
+                road_address_col_save = result.get_road_address_fullname()
                 road_address_col.append(road_address_col_save)
 
                 # 행정동
-                address_3depth_h_name_col.append(result.address['region_3depth_h_name'])
-                h_code_col.append(result.address['h_code'])
+                address_3depth_h_name_col.append(result.get_address_name('region_3depth_h_name'))
+                h_code_col.append(result.get_address_name('h_code'))
 
                 # 법정동
-                address_3depth_name_col.append(result.address['region_3depth_name'])
-                b_code_col.append(result.address['b_code'])
+                address_3depth_name_col.append(result.get_address_name('region_3depth_name'))
+                b_code_col.append(result.get_address_name('b_code'))
 
             # 지번 주소는 있으나 도로명 주소가 없는 경우가 있음, 그럴 땐 지번 주소의 배열만 늘어남.
             # 지번 주소의 배열과 엑셀의 행의 수가 맞지 않으면 에러.

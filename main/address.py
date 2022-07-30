@@ -69,6 +69,12 @@ class Address:
     def get_road_address_name(self, key: str = 'address_name'):
         return self.data['documents'][0]['road_address'][key] if self.type == AddressType.ROAD_ADDR else ''
 
+    def get_road_address_fullname(self):
+        fullname = f"{self.get_road_address_name()} " \
+                   f"({self.get_road_address_name('region_3depth_name')}"
+        fullname += f", {self.road_address['building_name']})" if self.road_address['building_name'] != '' else ')'
+        return fullname
+
 
 class AnalyzeType(Enum):
     EXACT = 'exact'
