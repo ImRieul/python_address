@@ -1,5 +1,7 @@
-import setting
+from typing import Union
 import requests
+
+import setting
 from error.error_address import *
 from main.address.enum import *
 

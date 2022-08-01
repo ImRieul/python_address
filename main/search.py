@@ -1,3 +1,5 @@
+from typing import Any
+
 from address.address import *
 from excel import *
 
@@ -8,13 +10,29 @@ from excel import *
 #  주소 DB 생성
 #  slice_address 리펙토링
 
+class Search:
+    def __init__(self, box: list):
+        self.box = {i: [] for i in box}
+
+    def cutting_data(self, input_data: list):
+        for index, value in enumerate(self.box.keys()):
+            self.box[value].append(input_data[index])
+
+    # def search(self, address: Address, count: int = 0)
+    #     if int != 0:
+    #         print(count, '번째 주소 검색을 다시 시작합니다.')
+    #         count += 1
+    #
+    #     query = input()
+
+
 
 def slice_address(address_name: str):
     detail_address = [',', '.', '지하', '층', '호', '상가동', '상가', '(', '***', '인근']
     index_correction = {'층': -1, '호': -3}
     add = address_name
     for detail in detail_address:
-        if add.find(detail) != -1:
+        if pandas.isna(add) and add.find(detail) != -1:
             add = add[:add.find(detail) \
                 if detail not in index_correction.keys() else add.find(detail) + index_correction[detail]]
 
@@ -36,21 +54,6 @@ def search_yourself(fail_address: Address, count: int = 3):
         else search_yourself(search_address, count - 1)
 
 
-# # 행정동
-# address_3depth_h_name_col.append(result.address['region_3depth_h_name'])
-# h_code_col.append(result.address['h_code'])
-#
-# # 법정동
-# address_3depth_name_col.append(result.address['region_3depth_name'])
-# b_code_col.append(result.address['b_code'])
-
-
-# def imsi(value, search_to_list)
-
-def cutting_data(value):
-    pass
-
-
 if __name__ == '__main__':
     file_name = 'sample.xlsx'
     # file_name = '84. 옥외광고물 허가 신고 현황_4번.xlsx'
@@ -58,40 +61,21 @@ if __name__ == '__main__':
 
     with Excel(file_name, index_row=2) as excel:
 
-        search_data = {i.value: [] for i in [
-            AddressEnum.ADDRESS_NAME,  # 지번 주소
-            RoadAddressEnum.ADDRESS_NAME,  # 도로명 주소
-            AddressEnum.REGION_3DEPTH_NAME,  # 법정동
-            AddressEnum.REGION_3DEPTH_H_NAME,  # 행정동
-        ]}
+        search = Search([
+            AddressEnum.ADDRESS_NAME.value,  # 지번 주소
+            RoadAddressEnum.ADDRESS_NAME.value,  # 도로명 주소
+            AddressEnum.REGION_3DEPTH_NAME.value,  # 법정동
+            AddressEnum.REGION_3DEPTH_H_NAME.value,  # 행정동
+        ])
 
         for i in excel['가맹점주소']:
             query = slice_address(i)
-            search_count = 1
             address = Address(query=query)
-            if address.is_search_type(AddressSearchType.NOT_EXIST, AddressSearchType.BED_REQUEST):
-                address = search_yourself(address)
 
-            search_data[AddressEnum.ADDRESS_NAME.value] = address.get_address_name()
-            search_data[RoadAddressEnum.ADDRESS_NAME] = address.get_road_address_fullname()
-            search_data[AddressEnum.REGION_3DEPTH_NAME] = address.get_address_name(AddressEnum.REGION_3DEPTH_NAME)
-            search_data[AddressEnum.B_CODE] = address.get_address_name(AddressEnum.B_CODE)
-            search_data[AddressEnum.REGION_3DEPTH_H_NAME] = address.get_address_name(AddressEnum.REGION_3DEPTH_H_NAME)
-            search_data[AddressEnum.H_CODE] = address.get_address_name(AddressEnum.H_CODE)
-
-        excel = pandas.concat([
-            excel,
-            pandas.DataFrame.from_dict(search_data, orient='index')
-            .rename(columns={index: value for index, value in enumerate([
-            'find_지번주소',
-            'find_도로명주소',
-            'find_법정동',
-            'find_법정코드',
-            'find_행정동',
-            'find_행정코드'
-            ])})
-        ]
-                             )
+            search.cutting_data([address.get_address_name(),
+                                 address.get_road_address_fullname(),
+                                 address.get_address_name(AddressEnum.REGION_3DEPTH_NAME)])
+                                 address.get_address_name(AddressEnum.REGION_3DEPTH_H_NAME)])
 
         #     try:
         #         # 검색
