@@ -34,10 +34,12 @@
 | Name        | Description                  |
 |-------------|------------------------------|
 | REGION_ADDR | 지번 주소만 있음                    |
-| ROAD_ADDR   | 지번 주소 + 도로명 주소가 있음           |
+| ROAD_ADDR   | 도로명 주소만 있음                   |
+| ALL_ADDR | 지번 주소 + 도로명 주소가 있음           |
 | NOT_EXIST   | 검색 결과가 없음(지번 주소, 도로명 주소가 없음) |
 | BED_REQUEST | 잘못된 검색                       |
 
+지번 주소만 있는 곳도 있고, 도로명 주소만 있는 곳도 있었습니다..
 
 
 ### AddressEnum
@@ -68,18 +70,18 @@
 
 > 도로명 주소에 관한 Enum
 
-| Name               | Description                   |
-|--------------------|-------------------------------|
-| ADDRESS_NAME       | 전체 도로명 주소                     |
-| REGION_1DEPTH_NAME | 지역명1                          |
-| REGION_2DEPTH_NAME | 지역명2                          |
-| REGION_3DEPTH_NAME | 지역명3                          |
-| ROAD_NAME          | 도로명                           |
-| MAIN_BUILDING_NO   | 건물 본번                         |
-| SUB_BUILDING_NO    | 건물 부번, 없을 경우 빈 문자열 반환('')     |
-| BUILDING_NAME      | 건물 이름                         |
-| UNDERGROUND_YN     | 지하 여부, Y or N                 |
-| ZONE_NO            | 우편번호(5자리)                     |
-| X                  | X 좌표 값, 경위도인 경우 longitude(경도) |
-| y                  | Y 좌표 값, 경위도인 경우 latitude(위도)  |
-| FULL_NAME          | 전체 도로명 주소 (지역명3, 건물 이름)       |
+| Name               | Description                        |
+|--------------------|------------------------------------|
+| ADDRESS_NAME       | 전체 도로명 주소                          |
+| REGION_1DEPTH_NAME | 지역명1                               |
+| REGION_2DEPTH_NAME | 지역명2                               |
+| REGION_3DEPTH_NAME | 지역명3                               |
+| ROAD_NAME          | 도로명                                |
+| MAIN_BUILDING_NO   | 건물 본번                              |
+| SUB_BUILDING_NO    | 건물 부번, 없을 경우 빈 문자열 반환('')          |
+| BUILDING_NAME      | 건물 이름                              |
+| UNDERGROUND_YN     | 지하 여부, Y or N                      |
+| ZONE_NO            | 우편번호(5자리)                          |
+| X                  | X 좌표 값, 경위도인 경우 longitude(경도)      |
+| y                  | Y 좌표 값, 경위도인 경우 latitude(위도)       |
+| FULL_NAME          | ADDRESS_NAME, REGION_3DEPTH_NAME, BUILDING_NAME |
