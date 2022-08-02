@@ -5,3 +5,5 @@ sample.xlsx
 ~$sample.xlsx
 __pycache__/
 *.pyc
+*.xlsx
+*.xls
