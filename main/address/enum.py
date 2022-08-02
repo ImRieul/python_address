@@ -41,3 +41,4 @@ class RoadAddressEnum(Enum):
     ZONE_NO = 'zone_no'
     X = 'x'
     y = 'y'
+    FULL_NAME = 'full_name'

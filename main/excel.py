@@ -25,9 +25,12 @@ class Excel:
         return self.sheet
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # 행열 위치를 초기화하는 로직 만들 예정
+        # 행열 위치를 초기화하는 로직 만들 예정 -> 굳이 필요할까..
         # pandas.read_excel(f'{self.__path}{self.__name}')
         self.sheet.to_excel(f'{self.__path}copy_{self.__name}')
+
+    def __getitem__(self, item):
+        pass  # excel[]을 사용하는데 수정 요구가 떠서 없애는 용
 
     def __read_excel(self):
         if self.__sheet_name is None:

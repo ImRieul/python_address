@@ -1,5 +1,6 @@
 from typing import Union
 import requests
+import enum
 
 import setting
 from error.error_address import *
@@ -41,24 +42,25 @@ class Address:
     def get_search_type(self):
         return self.__search_type
 
-    def get_address_name(self, key: AddressEnum = AddressEnum.ADDRESS_NAME):
-        return self.__data['documents'][0]['address'][key.value]\
-            if self.is_search_type(AddressSearchType.ROAD_ADDR, AddressSearchType.REGION_ADDR) else ''
-
-    def get_road_address_name(self, key: RoadAddressEnum = RoadAddressEnum.ADDRESS_NAME):
-        return self.__data['documents'][0]['road_address'][key.value]\
-            if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
-
-    def get_road_address_fullname(self):
-        fullname = f"{self.get_road_address_name()} " \
-                   f"({self.get_road_address_name(RoadAddressEnum.REGION_3DEPTH_NAME)}"
-        fullname += f", {self.get_road_address_name(RoadAddressEnum.BUILDING_NAME)})" \
-            if self.get_road_address_name(RoadAddressEnum.BUILDING_NAME) != '' else ')'
-        return fullname if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
+    def get_address_name(self, key: Union[AddressEnum, RoadAddressEnum]) -> str:
+        if key == RoadAddressEnum.FULL_NAME:
+            fullname = f"{self.get_address_name(RoadAddressEnum.ADDRESS_NAME)} " \
+                       f"({self.get_address_name(RoadAddressEnum.REGION_3DEPTH_NAME)}"
+            fullname += f", {self.get_address_name(RoadAddressEnum.BUILDING_NAME)})" \
+                if self.get_address_name(RoadAddressEnum.BUILDING_NAME) != '' else ')'
+            return fullname if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
+        if isinstance(key, enum.EnumMeta):  # enum 그대로 들어왔으면
+            return ''
+        if isinstance(key, AddressEnum):
+            return self.__data['documents'][0]['address'][key.value]\
+                if self.is_search_type(AddressSearchType.ROAD_ADDR, AddressSearchType.REGION_ADDR) else ''
+        elif isinstance(key, RoadAddressEnum):
+            return self.__data['documents'][0]['road_address'][key.value]\
+                if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
+        else:
+            return ''
 
 
 if __name__ == '__main__':
     address = Address(query='대전 서구 관저로 3-8')
-    print(address.get_address_name())
-    print(address.get_road_address_name())
-    print(address.get_road_address_fullname())
+    print(address.get_address_name(AddressEnum.ADDRESS_NAME))

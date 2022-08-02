@@ -65,7 +65,7 @@ class GetAddresssNameTest(unittest.TestCase):
 
     def test_road_address_name(self):
         address = Address(query=query_road_address)
-        self.assertEqual({i.value: address.get_road_address_name(i) for i in list(RoadAddressEnum)[:-2]},
+        self.assertEqual({i.value: address.get_address_name(i) for i in list(RoadAddressEnum)[:-3]},
                          {
                              "address_name": "대전 서구 둔산로 100",
                              "building_name": "대전광역시청",
@@ -81,7 +81,7 @@ class GetAddresssNameTest(unittest.TestCase):
 
     def test_road_address_fullname(self):
         address = Address(query=query_road_address)
-        self.assertEqual(address.get_road_address_fullname(), query_road_address + ' (둔산동, 대전광역시청)')
+        self.assertEqual(address.get_address_name(RoadAddressEnum.FULL_NAME), query_road_address + ' (둔산동, 대전광역시청)')
 
 
 if __name__ == '__main__':

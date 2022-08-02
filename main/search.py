@@ -3,7 +3,7 @@ from main.address.address import *
 
 import pandas as pd
 
-# TODO 주소 못찾으면 콘솔 입력
+# TODO 주소 못찾으면 콘솔 입력 V
 #  에러 수정
 #  주소 잘 입력했는지 검증
 #  주소 DB 생성
@@ -13,16 +13,21 @@ import pandas as pd
 class Search:
     def __init__(self, put_columns: list, save_columns: list):
         self.box = pd.DataFrame(columns=put_columns)
+        self.put_columns = put_columns
+        self.save_columns = save_columns
 
-    def cutting_data(self, input_data: list):
+    def add_row(self, input_data: list):
         self.box.loc[len(self.box.index)] = input_data
 
-    # def search(self, address: Address, count: int = 0)
-    #     if int != 0:
-    #         print(count, '번째 주소 검색을 다시 시작합니다.')
-    #         count += 1
-    #
-    #     query = input()
+    def search(self, excel: Excel, column_name):
+        for i in excel[column_name]:
+            query = slice_address(i)
+            address = search_yourself(i, Address(query=query))
+
+            self.add_row([address.get_address_name(i) for i in self.put_columns])
+
+    def check_column(self, excel: Excel):
+        pass
 
 
 def slice_address(address_name: str):
@@ -61,29 +66,18 @@ if __name__ == '__main__':
     count_error = 0
     excel_columns = {
         AddressEnum.ADDRESS_NAME: '지번주소',
-        RoadAddressEnum.ADDRESS_NAME: '도로명주소',
+        RoadAddressEnum.FULL_NAME: '도로명주소',
         AddressEnum.REGION_3DEPTH_NAME: '법정동',
         AddressEnum.REGION_3DEPTH_H_NAME: '행정동',
     }
 
     with Excel(file_name, index_row=1) as excel:
         search = Search(list(excel_columns.keys()), list(excel_columns.values()))
-
-        for i in excel['주소']:
-            query = slice_address(i)
-            address = search_yourself(i, Address(query=query))
-
-            search.cutting_data([
-                address.get_address_name(),
-                address.get_road_address_fullname(),
-                address.get_address_name(AddressEnum.REGION_3DEPTH_NAME),
-                address.get_address_name(AddressEnum.REGION_3DEPTH_H_NAME),
-            ])
+        search.search(excel, '주소')
 
         # 같은 컬럼 이름이 있으면 .1부터 시작해서 숫자가 더해짐.
-        # save
         for key, value in excel_columns.items():
             excel[value] = search.box[key].values
 
-        print(search.box[RoadAddressEnum.ADDRESS_NAME])
+        print(search.box[RoadAddressEnum.FULL_NAME])
         print(f'에러가 난 주소는 {count_error}개 입니다.')
