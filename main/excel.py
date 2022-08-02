@@ -13,8 +13,8 @@ class Excel:
                  index_row: int | None = 0, index_col: int | None = 0):
         self.__name = name
         self.__sheet_name = sheet_name
-        self.__index_row = index_row - 1 if index_row < 0 else 0
-        self.__index_col = index_col - 1 if index_col < 0 else 0
+        self.__index_row = index_row - 1 if index_row >= 0 else 0
+        self.__index_col = index_col - 1 if index_col >= 0 else 0
         self.__path = f'{setting.ROOT_PROJECT}\\' if platform.system() == 'Windows' else \
             f'{setting.ROOT_PROJECT}/'
         self.sheet = None

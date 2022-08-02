@@ -9,6 +9,7 @@ class AnalyzeType(Enum):
 class AddressSearchType(Enum):
     REGION_ADDR = 'region_addr'
     ROAD_ADDR = 'road_address'
+    ALL_ADDR = 'add_addr'
     NOT_EXIST = None
     BED_REQUEST = 'bed_request'
 

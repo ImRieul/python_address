@@ -31,8 +31,11 @@ class Address:
             self.__search_type = AddressSearchType.BED_REQUEST
         elif len(self.__data.get('documents')) == 0:
             self.__search_type = AddressSearchType.NOT_EXIST
-        elif self.__data.get('documents')[0].get('road_address') is None:
-            self.__search_type = AddressSearchType.REGION_ADDR
+        elif self.__data.get('documents')[0].get('address') is not None:
+            if self.__data.get('documents')[0].get('road_address') is not None:
+                self.__search_type = AddressSearchType.ALL_ADDR
+            else:
+                self.__search_type = AddressSearchType.REGION_ADDR
         elif self.__data.get('documents')[0].get('road_address') is not None:
             self.__search_type = AddressSearchType.ROAD_ADDR
 
@@ -48,15 +51,15 @@ class Address:
                        f"({self.get_address_name(RoadAddressEnum.REGION_3DEPTH_NAME)}"
             fullname += f", {self.get_address_name(RoadAddressEnum.BUILDING_NAME)})" \
                 if self.get_address_name(RoadAddressEnum.BUILDING_NAME) != '' else ')'
-            return fullname if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
+            return fullname if self.is_search_type(AddressSearchType.ALL_ADDR, AddressSearchType.ROAD_ADDR) else ''
         if isinstance(key, enum.EnumMeta):  # enum 그대로 들어왔으면
             return ''
         if isinstance(key, AddressEnum):
             return self.__data['documents'][0]['address'][key.value]\
-                if self.is_search_type(AddressSearchType.ROAD_ADDR, AddressSearchType.REGION_ADDR) else ''
+                if self.is_search_type(AddressSearchType.ALL_ADDR, AddressSearchType.REGION_ADDR) else ''
         elif isinstance(key, RoadAddressEnum):
             return self.__data['documents'][0]['road_address'][key.value]\
-                if self.is_search_type(AddressSearchType.ROAD_ADDR) else ''
+                if self.is_search_type(AddressSearchType.ALL_ADDR, AddressSearchType.ROAD_ADDR) else ''
         else:
             return ''
 

@@ -20,9 +20,14 @@ class Search:
         self.box.loc[len(self.box.index)] = input_data
 
     def search(self, excel: Excel, column_name):
-        for i in excel[column_name]:
-            query = slice_address(i)
-            address = search_yourself(i, Address(query=query))
+        for i, v in enumerate(excel[column_name]):
+            if pandas.isna(v):
+                print(f'검색에 NaN 값이 들어왔습니다. {i+1} 번째 row')
+                self.add_row(['' for i in self.put_columns])
+                continue
+
+            query = slice_address(v)
+            address = search_yourself(v, Address(query=query))
 
             self.add_row([address.get_address_name(i) for i in self.put_columns])
 
@@ -35,7 +40,7 @@ def slice_address(address_name: str):
     index_correction = {'층': -1, '호': -3}
     add = address_name
     for detail in detail_address:
-        if pandas.isna(add) and add.find(detail) != -1:
+        if not pandas.isna(add) and add.find(detail) != -1:
             add = add[:add.find(detail) \
                 if detail not in index_correction.keys() else add.find(detail) + index_correction[detail]]
 
@@ -43,7 +48,7 @@ def slice_address(address_name: str):
 
 
 def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
-    if fail_address.is_search_type(AddressSearchType.REGION_ADDR, AddressSearchType.ROAD_ADDR):
+    if fail_address.is_search_type(AddressSearchType.REGION_ADDR, AddressSearchType.ROAD_ADDR, AddressSearchType.ALL_ADDR):
         return fail_address
 
     print(f"주소가 검색되지 않았습니다. 정확한 주소를 입력해주세요. ({count} 번째)")
@@ -61,7 +66,7 @@ def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
 
 
 if __name__ == '__main__':
-    file_name = 'sample.xlsx'
+    file_name = '27. 0세아 전용어린이집 지원현황_11번.xlsx'
     # file_name = '84. 옥외광고물 허가 신고 현황_4번.xlsx'
     count_error = 0
     excel_columns = {
@@ -71,7 +76,7 @@ if __name__ == '__main__':
         AddressEnum.REGION_3DEPTH_H_NAME: '행정동',
     }
 
-    with Excel(file_name, index_row=1) as excel:
+    with Excel(file_name, index_row=3, sheet_name='Sheet1') as excel:
         search = Search(list(excel_columns.keys()), list(excel_columns.values()))
         search.search(excel, '주소')
 
