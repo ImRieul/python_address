@@ -5,55 +5,103 @@ import pandas.core.frame
 from main.excel import *
 
 
-file_exist = 'sample.xlsx'
-file_not_exist = 'hello python'
+class ReadExcel(unittest.TestCase):
+    def test_exist(self):
+        # given
+        file_exist = 'sample.xlsx'
 
-
-class NewExcel(unittest.TestCase):
-    def test_read_excel__exist(self):
+        # when
         excel = Excel(file_exist)
+
+        # then
         self.assertIsInstance(excel.sheet, pandas.core.frame.DataFrame)
 
-    def test_read_excel__not_exist(self):
-        with self.assertRaises(FileNotFoundError):
+    def test_not_exist(self):
+        with self.assertRaises(FileNotFoundError):  # then
+            # given
+            file_not_exist = 'hello python'
+
+            # when
             excel = Excel(file_not_exist)
 
-    def test_read_excel__type_not_str(self):  # str 타입이 아니면 None으로 들어가는 거 같다.
-        def not_str():
-            pass
-        with self.assertRaises(FileNotFoundError):
-            excel = Excel(not_str())
+    def test_type_not_str(self):  # str 타입이 아니면 None으로 들어가는 거 같다.
+        with self.assertRaises(FileNotFoundError):  # then
+            # given
+            def not_str():
+                pass
 
-    # sheet_name value
-    def test_read_excel__exist_sheet(self):
-        excel = Excel(file_exist, sheet_name='data')
+            # when
+            Excel(not_str())
+
+    def test_exist_sheet(self):
+        # given
+        file_exist = 'sample.xlsx'
+        sheet_name = 'Sheet1'
+
+        # when
+        excel = Excel(file_exist, sheet_name=sheet_name)
+
+        # then
         self.assertFalse(excel.sheet.empty)
 
-    def test_read_excel__not_exist_sheet(self):
-        with self.assertRaises(ValueError):
-            excel = Excel(file_exist, sheet_name='hello')
+    def test_not_exist_sheet(self):
+        with self.assertRaises(ValueError):  # then
+            # given
+            file_exist = 'sample.xlsx'
+            sheet_name = 'hello'
 
-    # index
-    def test_read_excel__in_index_row(self):
-        excel = Excel(file_exist, index_row=1)
-        self.assertFalse(excel.sheet.empty)
+            # when
+            Excel(file_exist, sheet_name=sheet_name)
 
-    def test_read_excel__in_not_index_row(self):
-        with self.assertRaises(ValueError):
-            excel = Excel(file_exist, index_row=10000)
+    def test_in_index_row(self):
+        # given
+        file_exist = 'sample.xlsx'
+        index_row = 1
 
-    def test_read_excel__in_index_col(self):
-        excel = Excel(file_exist, index_col=1)
-        self.assertFalse(excel.sheet.empty)
+        # when
+        excel = Excel(file_exist, index_row=index_row)
 
-    def test_read_excel__in_not_index_col(self):
-        with self.assertRaises(IndexError):
-            excel = Excel(file_exist, index_col=10000)
+        # then
+        self.assertEqual(excel.get_index_row(), index_row)
 
-    # index_row -> index_col
-    def test_read_excel__in_not_index_row_col(self):
-        with self.assertRaises(ValueError):
-            excel = Excel(file_exist, index_row=10000, index_col=10000)
+    def test_over_index_row(self):
+        with self.assertRaises(ValueError):  # then
+            # given
+            file_exist = 'sample.xlsx'
+            index_row = 10000000000
+
+            # when
+            Excel(file_exist, index_row=index_row)
+
+    def test_in_index_col(self):
+        # given
+        file_exist = 'sample.xlsx'
+        index_col = 1
+
+        # when
+        excel = Excel(file_exist, index_col=index_col)
+
+        # then
+        self.assertEqual(excel.get_index_col(), index_col)
+
+    def test_over_index_col(self):
+        with self.assertRaises(IndexError):  # then
+            # given
+            file_exist = 'sample.xlsx'
+            index_col = 10000000000
+
+            # when
+            Excel(file_exist, index_col=index_col)
+
+    def test_over_index_row_and_col(self):
+        with self.assertRaises(ValueError):  # then
+            # given
+            file_exist = 'sample.xlsx'
+            index_row = 10000000000
+            index_col = 10000000000
+
+            # when
+            Excel(file_exist, index_row=index_row, index_col=index_col)
 
 
 if __name__ == '__main__':

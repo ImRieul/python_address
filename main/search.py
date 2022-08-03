@@ -11,25 +11,33 @@ import pandas as pd
 
 
 class Search:
-    def __init__(self, put_columns: list, save_columns: list):
-        self.box = pd.DataFrame(columns=put_columns)
+    def __init__(self, put_columns: list):
+        self.data = pd.DataFrame(columns=put_columns)
         self.put_columns = put_columns
-        self.save_columns = save_columns
 
-    def add_row(self, input_data: list):
-        self.box.loc[len(self.box.index)] = input_data
+    def append_row(self, input_data: Union[list, str]):
+        self.data.loc[len(self.data.index)] = input_data
 
-    def search(self, excel: Excel, column_name):
-        for i, v in enumerate(excel[column_name]):
+    def address(self, excel: Excel, column_search):
+        for i, v in enumerate(excel[column_search]):
             if pandas.isna(v):
                 print(f'검색에 NaN 값이 들어왔습니다. {i+1} 번째 row')
-                self.add_row(['' for i in self.put_columns])
+                self.append_row(['' for i in self.put_columns])
                 continue
 
             query = slice_address(v)
             address = search_yourself(v, Address(query=query))
 
-            self.add_row([address.get_address_name(i) for i in self.put_columns])
+            self.append_row([address.get_address_name(i) for i in self.put_columns])
+
+    def excel(self, excel: Excel, column_search, data_excel: Excel):
+        for i, v in enumerate(excel[column_search]):
+            if pandas.isna(v):
+                print(f"검색에 NaN 값이 들어왔습니다.")
+                self.append_row(self.put_columns)
+                continue
+
+            self.append_row(data_excel.sheet.loc[v])
 
     def check_column(self, excel: Excel):
         pass
@@ -67,7 +75,6 @@ def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
 
 if __name__ == '__main__':
     file_name = '27. 0세아 전용어린이집 지원현황_11번.xlsx'
-    # file_name = '84. 옥외광고물 허가 신고 현황_4번.xlsx'
     count_error = 0
     excel_columns = {
         AddressEnum.ADDRESS_NAME: '지번주소',
@@ -76,13 +83,23 @@ if __name__ == '__main__':
         AddressEnum.REGION_3DEPTH_H_NAME: '행정동',
     }
 
+    code_h_columns = {
+        AddressEnum.H_CODE: '행정코드',
+    }
+    code_b_columns = {
+        AddressEnum.B_CODE: '법정코드',
+    }
+
     with Excel(file_name, index_row=3, sheet_name='Sheet1') as excel:
-        search = Search(list(excel_columns.keys()), list(excel_columns.values()))
-        search.search(excel, '주소')
+        search_address = Search(list(excel_columns.keys()))
+        search_address.address(excel, '주소')
 
         # 같은 컬럼 이름이 있으면 .1부터 시작해서 숫자가 더해짐.
         for key, value in excel_columns.items():
-            excel[value] = search.box[key].values
+            excel[value] = search_address.data[key].values
 
-        print(search.box[RoadAddressEnum.FULL_NAME])
+        print(search_address.data[RoadAddressEnum.FULL_NAME])
         print(f'에러가 난 주소는 {count_error}개 입니다.')
+
+        search_h_code = Search(list(code_h_columns.keys()))
+        search_b_code = Search(list(code_b_columns.keys()))

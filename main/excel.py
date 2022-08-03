@@ -13,8 +13,8 @@ class Excel:
                  index_row: int | None = 0, index_col: int | None = 0):
         self.__name = name
         self.__sheet_name = sheet_name
-        self.__index_row = index_row - 1 if index_row >= 0 else 0
-        self.__index_col = index_col - 1 if index_col >= 0 else 0
+        self.__index_row = index_row - 1 if index_row > 0 else 0
+        self.__index_col = index_col - 1 if index_col > 0 else 0
         self.__path = f'{setting.ROOT_PROJECT}\\' if platform.system() == 'Windows' else \
             f'{setting.ROOT_PROJECT}/'
         self.sheet = None
@@ -42,6 +42,12 @@ class Excel:
                                            sheet_name=self.__sheet_name,
                                            header=self.__index_row,
                                            index_col=self.__index_col)
+
+    def get_index_row(self):
+        return self.__index_row+1
+
+    def get_index_col(self):
+        return self.__index_col+1
 
 
 if __name__ == '__main__':

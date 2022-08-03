@@ -13,44 +13,89 @@ query_not_exist = '커피한잔할래요'
 
 class AnalyzeTypeTest(unittest.TestCase):
     def test_road_address_is_building_to_same(self):
+        # given
         query = query_road_address + ' 서울시청'
+
+        # when
         address = Address(query=query, analyze_type=AnalyzeType.EXACT)
+
+        # then
         self.assertEqual(address.get_search_type(), AddressSearchType.NOT_EXIST)
 
     def test_road_address_is_building_to_not_same(self):
+        # given
         query = query_road_address + ' 서울시청'
+
+        # when
         address = Address(query=query, analyze_type=AnalyzeType.SIMILAR)
+
+        # then
         self.assertEqual(address.get_search_type(), AddressSearchType.ROAD_ADDR)
 
 
 class GetSearchTypeTest(unittest.TestCase):
     def test_address(self):
+        # given
         address = Address(query=query_address)
-        self.assertEqual(address.get_search_type(), AddressSearchType.ROAD_ADDR)
+
+        # when
+        search_type = address.get_search_type()
+
+        # then
+        self.assertEqual(search_type, AddressSearchType.ROAD_ADDR)
 
     def test_only_address(self):
+        # given
         address = Address(query=query_only_address)
-        self.assertEqual(address.get_search_type(), AddressSearchType.REGION_ADDR)
+
+        # when
+        search_type = address.get_search_type()
+
+        # then
+        self.assertEqual(search_type, AddressSearchType.REGION_ADDR)
 
     def test_road_address(self):
+        # given
         address = Address(query=query_road_address)
-        self.assertEqual(address.get_search_type(), AddressSearchType.ROAD_ADDR)
+
+        # when
+        search_type = address.get_search_type()
+
+        # then
+        self.assertEqual(search_type, AddressSearchType.ROAD_ADDR)
 
     def test_not_exist(self):
+        # given
         address = Address(query=query_not_exist)
-        self.assertEqual(address.get_search_type(), AddressSearchType.NOT_EXIST)
+
+        # when
+        search_type = address.get_search_type()
+
+        # then
+        self.assertEqual(search_type, AddressSearchType.NOT_EXIST)
 
     def test_empty(self):
+        # given
         address = Address(query='')
-        self.assertEqual(address.get_search_type(), AddressSearchType.BED_REQUEST)
+
+        # when
+        search_type = address.get_search_type()
+
+        # then
+        self.assertEqual(search_type, AddressSearchType.BED_REQUEST)
 
 
 class GetAddresssNameTest(unittest.TestCase):
     # x, y 좌표는 변환 과정에서 오차가 나는듯 하다
     def test_address_name(self):
+        # given
         address = Address(query=query_address)
-        self.assertEqual({i.value: address.get_address_name(i) for i in list(AddressEnum)[:-2]},
-                         {
+
+        # when
+        search_data = {i.value: address.get_address_name(i) for i in list(AddressEnum)[:-2]}
+
+        # then
+        self.assertEqual(search_data, {
                              "address_name": "대전 서구 둔산동 1420",
                              "b_code": "3017011200",
                              "h_code": "3017063000",
@@ -64,8 +109,14 @@ class GetAddresssNameTest(unittest.TestCase):
                          })
 
     def test_road_address_name(self):
+        # given
         address = Address(query=query_road_address)
-        self.assertEqual({i.value: address.get_address_name(i) for i in list(RoadAddressEnum)[:-3]},
+
+        # when
+        search_data = {i.value: address.get_address_name(i) for i in list(RoadAddressEnum)[:-3]}
+
+        # then
+        self.assertEqual(search_data,
                          {
                              "address_name": "대전 서구 둔산로 100",
                              "building_name": "대전광역시청",
@@ -80,8 +131,14 @@ class GetAddresssNameTest(unittest.TestCase):
                          })
 
     def test_road_address_fullname(self):
+        # given
         address = Address(query=query_road_address)
-        self.assertEqual(address.get_address_name(RoadAddressEnum.FULL_NAME), query_road_address + ' (둔산동, 대전광역시청)')
+
+        # when
+        address_fullname = address.get_address_name(RoadAddressEnum.FULL_NAME)
+
+        # then
+        self.assertEqual(address_fullname, query_road_address + ' (둔산동, 대전광역시청)')
 
 
 if __name__ == '__main__':
