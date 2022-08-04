@@ -1,5 +1,11 @@
+from __future__ import annotations
+
+from typing import Any
+
 from main.excel import *
 from main.address.address import *
+from main.search.search_enum import *
+from error.error_search import *
 
 import pandas as pd
 
@@ -16,22 +22,39 @@ class Search:
         self.put_columns = put_columns
 
     def append_row(self, input_data: Union[list, str]):
+        if isinstance(input_data, list) and len(self.data.columns) != len(input_data):
+            raise SearchNotEqualColumnLength(input_data, self.data.columns)
         self.data.loc[len(self.data.index)] = input_data
 
-    def address(self, excel: Excel, column_search):
-        for i, v in enumerate(excel[column_search]):
-            if pandas.isna(v):
-                print(f'검색에 NaN 값이 들어왔습니다. {i+1} 번째 row')
-                self.append_row(['' for i in self.put_columns])
-                continue
+    def append_column(self, input_data: dict[Any: list], column_name: str = None):
+        append_index = list(self.data.columns).index(column_name) \
+            if column_name is not None and list(self.data.columns).index(column_name) != -1 \
+            else len(self.data.columns)
 
-            query = slice_address(v)
-            address = search_yourself(v, Address(query=query))
+        for key, value in input_data.items():
+            if len(self.data.index) != len(value):
+                raise SearchNotEqualRowLength(input_data, self.data)
+            self.data.insert(append_index, key, value)
 
-            self.append_row([address.get_address_name(i) for i in self.put_columns])
+    def to_address(self, excel: Excel, search_type: SearchType, query):
+        if search_type == SearchType.COLUMNS:
+            for index, value in enumerate(excel.get_column_data(query)):
+                if pandas.isna(value):
+                    print(f'검색에 NaN 값이 들어왔습니다. {index+1} 번째 row')
+                    self.append_row('')
+                    continue
 
-    def excel(self, excel: Excel, column_search, data_excel: Excel):
-        for i, v in enumerate(excel[column_search]):
+                query = slice_address(value)
+                address = search_yourself(value, Address(query=query))
+
+                self.append_row([address.get_address_name(i) for i in self.put_columns])
+        elif search_type == SearchType.ROW:
+            for index, value in enumerate(excel.get_row_data(query)):
+                if pandas.isna(value):
+                    print(f"검색에 NaN 값이 들어왔습니다. {index+1} 번째 column")
+
+    def to_excel(self, excel: Excel, column_search, data_excel: Excel):
+        for i, v in enumerate(excel.get_column_data(column_search)):
             if pandas.isna(v):
                 print(f"검색에 NaN 값이 들어왔습니다.")
                 self.append_row(self.put_columns)
@@ -40,6 +63,10 @@ class Search:
             self.append_row(data_excel.sheet.loc[v])
 
     def check_column(self, excel: Excel):
+        pass
+
+    def save(self):
+        # 변수에 저장하려는 excel 등을 넣어서 연결..?
         pass
 
 
@@ -56,7 +83,7 @@ def slice_address(address_name: str):
 
 
 def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
-    if fail_address.is_search_type(AddressSearchType.REGION_ADDR, AddressSearchType.ROAD_ADDR, AddressSearchType.ALL_ADDR):
+    if fail_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR, AddressDataType.ALL_ADDR):
         return fail_address
 
     print(f"주소가 검색되지 않았습니다. 정확한 주소를 입력해주세요. ({count} 번째)")
@@ -69,7 +96,7 @@ def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
 
     search_address = Address(query=query, analyze_type=fail_address.analyze_type)
     return search_address \
-        if search_address.is_search_type(AddressSearchType.REGION_ADDR, AddressSearchType.ROAD_ADDR) \
+        if search_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR) \
         else search_yourself(query, search_address, count + 1)
 
 
@@ -92,7 +119,7 @@ if __name__ == '__main__':
 
     with Excel(file_name, index_row=3, sheet_name='Sheet1') as excel:
         search_address = Search(list(excel_columns.keys()))
-        search_address.address(excel, '주소')
+        search_address.to_address(excel, '주소')
 
         # 같은 컬럼 이름이 있으면 .1부터 시작해서 숫자가 더해짐.
         for key, value in excel_columns.items():

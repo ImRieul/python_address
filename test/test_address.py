@@ -1,7 +1,7 @@
 import unittest
 
 from main.address.address import *
-from main.address.enum import AnalyzeType, AddressSearchType
+from main.address.address_enum import *
 from error.error_address import *
 import setting
 
@@ -20,7 +20,7 @@ class AnalyzeTypeTest(unittest.TestCase):
         address = Address(query=query, analyze_type=AnalyzeType.EXACT)
 
         # then
-        self.assertEqual(address.get_search_type(), AddressSearchType.NOT_EXIST)
+        self.assertEqual(address.get_search_type(), AddressDataType.NOT_EXIST)
 
     def test_road_address_is_building_to_not_same(self):
         # given
@@ -30,7 +30,7 @@ class AnalyzeTypeTest(unittest.TestCase):
         address = Address(query=query, analyze_type=AnalyzeType.SIMILAR)
 
         # then
-        self.assertEqual(address.get_search_type(), AddressSearchType.ROAD_ADDR)
+        self.assertEqual(address.get_search_type(), AddressDataType.ROAD_ADDR)
 
 
 class GetSearchTypeTest(unittest.TestCase):
@@ -42,7 +42,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressSearchType.ROAD_ADDR)
+        self.assertEqual(search_type, AddressDataType.ROAD_ADDR)
 
     def test_only_address(self):
         # given
@@ -52,7 +52,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressSearchType.REGION_ADDR)
+        self.assertEqual(search_type, AddressDataType.REGION_ADDR)
 
     def test_road_address(self):
         # given
@@ -62,7 +62,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressSearchType.ROAD_ADDR)
+        self.assertEqual(search_type, AddressDataType.ROAD_ADDR)
 
     def test_not_exist(self):
         # given
@@ -72,7 +72,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressSearchType.NOT_EXIST)
+        self.assertEqual(search_type, AddressDataType.NOT_EXIST)
 
     def test_empty(self):
         # given
@@ -82,7 +82,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressSearchType.BED_REQUEST)
+        self.assertEqual(search_type, AddressDataType.BED_REQUEST)
 
 
 class GetAddresssNameTest(unittest.TestCase):

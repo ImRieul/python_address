@@ -1,8 +1,8 @@
 import unittest
-
 import pandas.core.frame
 
 from main.excel import *
+from error.error_excel import *
 
 
 class ReadExcel(unittest.TestCase):
@@ -102,6 +102,48 @@ class ReadExcel(unittest.TestCase):
 
             # when
             Excel(file_exist, index_row=index_row, index_col=index_col)
+
+
+class GetRow(unittest.TestCase):
+    def test_fail(self):
+        # given
+        row_index_name = 1
+        excel = Excel('sample.xlsx')
+
+        # when
+        search_row_data = excel.get_row_data(row_index_name)
+
+        # then
+        self.assertNotEqual(search_row_data, {})
+
+    def test_not_exist_row_index_name(self):
+        with self.assertRaises(ExcelNotFindRowIndex):  # then
+            # given
+            row_index_name = 'hello world!'
+            excel = Excel('sample.xlsx')
+
+            # when
+            excel.get_row_data(row_index_name)
+
+    def test_ok(self):
+        # given
+        row_index_name = 1
+        excel = Excel('sample.xlsx')
+
+        # when
+        search_row_data = excel.get_row_data(row_index_name)
+
+        # then
+        self.assertEqual(search_row_data, {
+            '도로명주소': '',
+            '법정동': '',
+            '법정코드': '',
+            '비고': '지번주소, 도로명주소 모두 있는 문자열',
+            '주소': '대전광역시 서구 둔산로 100',
+            '지번주소': '',
+            '행정동': '',
+            '행정코드': ''
+        }, 'test_ok가 실패했습니다.')
 
 
 if __name__ == '__main__':

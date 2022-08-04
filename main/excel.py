@@ -1,9 +1,9 @@
 from __future__ import annotations
-
 import pandas
 import platform
 
 import setting
+from error.error_excel import *
 
 
 # 만들고 싶은 기능
@@ -22,7 +22,7 @@ class Excel:
         self.__read_excel()
 
     def __enter__(self):
-        return self.sheet
+        return self.sheet.fillna('')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         # 행열 위치를 초기화하는 로직 만들 예정 -> 굳이 필요할까..
@@ -34,23 +34,50 @@ class Excel:
 
     def __read_excel(self):
         if self.__sheet_name is None:
-            self.sheet = pandas.read_excel(f'{self.__path}{self.__name}',
-                                           header=self.__index_row,
-                                           index_col=self.__index_col)
+            self.sheet = pandas \
+                .read_excel(f'{self.__path}{self.__name}',
+                            header=self.__index_row,
+                            index_col=self.__index_col) \
+                .fillna('')
         else:
-            self.sheet = pandas.read_excel(f'{self.__path}{self.__name}',
-                                           sheet_name=self.__sheet_name,
-                                           header=self.__index_row,
-                                           index_col=self.__index_col)
+            self.sheet = pandas \
+                .read_excel(f'{self.__path}{self.__name}',
+                            sheet_name=self.__sheet_name,
+                            header=self.__index_row,
+                            index_col=self.__index_col) \
+                .fillna('')
 
     def get_index_row(self):
-        return self.__index_row+1
+        return self.__index_row + 1
 
     def get_index_col(self):
-        return self.__index_col+1
+        return self.__index_col + 1
+
+    def get_row_data(self, row_name):
+        if row_name in self.sheet.index:
+            row_index = list(self.sheet.index).index(row_name) + 1
+            return dict(self.sheet.loc[row_index])
+        else:
+            raise ExcelNotFindRowIndex
+
+    def get_column_data(self, column_name):
+        if column_name in self.sheet.columns:
+            return dict(self.sheet.get(column_name))
+        else:
+            raise ExcelNotFindColumnIndex
+
+    def get_columns(self):
+        return list(self.sheet.columns)
+
+    def set_column(self):
+        pass
 
 
 if __name__ == '__main__':
     # xls, xlsx FileNotFoundError
     with Excel('sample.xlsx', index_row=1) as excel:
-        print(excel['코드'])
+        pass
+
+    text = 2
+    excel2 = Excel('sample.xlsx')
+    print(dict(excel2.get_row_data(text)))

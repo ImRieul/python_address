@@ -6,7 +6,7 @@ class AnalyzeType(Enum):
     SIMILAR = 'similar'
 
 
-class AddressSearchType(Enum):
+class AddressDataType(Enum):
     REGION_ADDR = 'region_addr'
     ROAD_ADDR = 'road_address'
     ALL_ADDR = 'add_addr'
