@@ -14,7 +14,7 @@ class ReadExcel(unittest.TestCase):
         excel = Excel(file_exist)
 
         # then
-        self.assertIsInstance(excel.sheet, pandas.core.frame.DataFrame)
+        self.assertIsInstance(excel.data, pandas.core.frame.DataFrame)
 
     def test_not_exist(self):
         with self.assertRaises(FileNotFoundError):  # then
@@ -42,7 +42,7 @@ class ReadExcel(unittest.TestCase):
         excel = Excel(file_exist, sheet_name=sheet_name)
 
         # then
-        self.assertFalse(excel.sheet.empty)
+        self.assertFalse(excel.data.empty)
 
     def test_not_exist_sheet(self):
         with self.assertRaises(ValueError):  # then
