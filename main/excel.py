@@ -56,31 +56,6 @@ class Excel(BaseDataFrame):
                         index_col=self.__index_col) \
             .fillna('')
 
-    def get_index_row(self):
-        return self.__index_row + 1
-
-    def get_index_col(self):
-        return self.__index_col + 1
-
-    def get_row_data(self, row_name):
-        if row_name in self.data.index:
-            row_index = list(self.data.index).index(row_name) + 1
-            return dict(self.data.loc[row_index])
-        else:
-            raise ExcelNotFindRowIndex
-
-    def get_column_data(self, column_name):
-        if column_name in self.data.columns:
-            return dict(self.data.get(column_name))
-        else:
-            raise ExcelNotFindColumnIndex
-
-    def get_columns(self):
-        return list(self.data.columns)
-
-    def set_column(self):
-        pass
-
 
 if __name__ == '__main__':
     # xls, xlsx FileNotFoundError
@@ -89,4 +64,4 @@ if __name__ == '__main__':
 
     text = 2
     excel2 = Excel('sample.xlsx')
-    print(dict(excel2.get_row_data(text)))
+    print(excel2.get_row_data(row_index=text))

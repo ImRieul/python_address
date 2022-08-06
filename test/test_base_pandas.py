@@ -316,7 +316,7 @@ class GetRowData(unittest.TestCase):
         row_name = 'ㄱ'
 
         # when
-        rows_data = bp.get_rows_data(row_name=row_name)
+        rows_data = bp.get_row_data(row_name=row_name)
 
         # then
         self.assertEqual(rows_data, [1])
@@ -330,7 +330,7 @@ class GetRowData(unittest.TestCase):
         column_name = 'a'
 
         # when
-        rows_data = bp.get_rows_data(column_name)
+        rows_data = bp.get_row_data(column_name)
 
         # then
         self.assertIsNone(rows_data)
@@ -344,7 +344,7 @@ class GetRowData(unittest.TestCase):
         data_name = 2
 
         # when
-        row_data = bp.get_rows_data(row_name=data_name)
+        row_data = bp.get_row_data(row_name=data_name)
 
         # then
         self.assertIsNone(row_data)
@@ -358,7 +358,7 @@ class GetRowData(unittest.TestCase):
         row_name_not_equal_type = 50
 
         # when
-        row_data = bp.get_rows_data(row_name=row_name_not_equal_type)
+        row_data = bp.get_row_data(row_name=row_name_not_equal_type)
 
         # then
         self.assertIsNone(row_data)
@@ -372,7 +372,7 @@ class GetRowData(unittest.TestCase):
         row_index = 0
 
         # when
-        row_data = bp.get_rows_data(row_index=row_index)
+        row_data = bp.get_row_data(row_index=row_index)
 
         # then
         self.assertEqual([1], row_data)
@@ -386,7 +386,7 @@ class GetRowData(unittest.TestCase):
         row_index_not_find = 100
 
         # when
-        row_data = bp.get_rows_data(row_index=row_index_not_find)
+        row_data = bp.get_row_data(row_index=row_index_not_find)
 
         # then
         self.assertIsNone(row_data)
@@ -402,7 +402,7 @@ class GetColumnData(unittest.TestCase):
         column_name = 'a'
 
         # when
-        column_data = bp.get_columns_data(column_name=column_name)
+        column_data = bp.get_column_data(column_name=column_name)
 
         # then
         self.assertEqual([1, 2], column_data)
@@ -416,7 +416,7 @@ class GetColumnData(unittest.TestCase):
         row_name = 'ㄱ'
 
         # when
-        column_data = bp.get_columns_data(column_name=row_name)
+        column_data = bp.get_column_data(column_name=row_name)
 
         # then
         self.assertIsNone(column_data)
@@ -430,7 +430,7 @@ class GetColumnData(unittest.TestCase):
         data_name = 2
 
         # when
-        column_data = bp.get_columns_data(column_name=data_name)
+        column_data = bp.get_column_data(column_name=data_name)
 
         # then
         self.assertIsNone(column_data)
@@ -444,7 +444,7 @@ class GetColumnData(unittest.TestCase):
         column_name_not_equal_type = 50
 
         # when
-        column_data = bp.get_columns_data(column_name=column_name_not_equal_type)
+        column_data = bp.get_column_data(column_name=column_name_not_equal_type)
 
         # then
         self.assertIsNone(column_data)
@@ -458,7 +458,7 @@ class GetColumnData(unittest.TestCase):
         column_index = 0
 
         # when
-        column_data = bp.get_columns_data(column_index=column_index)
+        column_data = bp.get_column_data(column_index=column_index)
 
         # then
         self.assertEqual([1, 2], column_data)
@@ -472,10 +472,57 @@ class GetColumnData(unittest.TestCase):
         column_index_not_find = 100
 
         # when
-        column_data = bp.get_columns_data(column_index=column_index_not_find)
+        column_data = bp.get_column_data(column_index=column_index_not_find)
 
         # then
         self.assertIsNone(column_data)
+
+
+class SetRowData(unittest.TestCase):
+    def test_row_index_name_none_ok(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3]
+
+        # when
+        bp.set_row_data(set_row_data)
+        
+        # then
+        self.assertEqual([3], bp.get_row_data(row_index=bp.get_row_index() - 1))
+
+    def test_row_index_name_exist_ok(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3]
+
+        # when
+        bp.set_row_data(set_row_data, 'ㄷ')
+
+        # then
+        self.assertEqual([3], bp.get_row_data(row_name='ㄷ'))
+
+    def test_data_over_column(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3, 33]
+        
+        # when
+        # column 크기에 맞지 않는 데이터는 입력되지 않는다.
+        # 1. 옵션을 제공해서 크기가 넘어가더라도 자동으로 column의 내용을 채우도록 한다
+        # 2. 옵션은 굳이 넣지 않는다.
+        bp.set_row_data(set_row_data, 'ㄷ')
+
+        # then
+        self.assertEqual([3, 33], bp.get_row_data(row_name='ㄷ'))
 
 
 if __name__ == '__main__':

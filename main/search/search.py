@@ -16,9 +16,9 @@ import pandas as pd
 #  slice_address 리팩토링
 
 
-class Search:
+class Search(BaseDataFrame):
     def __init__(self, put_columns: list):
-        self.data = pd.DataFrame(columns=put_columns)
+        super().__init__(pd.DataFrame(columns=put_columns))
         self.put_columns = put_columns
 
     def append_row(self, input_data: Union[list, str]):
@@ -60,7 +60,7 @@ class Search:
                 self.append_row(self.put_columns)
                 continue
 
-            self.append_row(data_excel.sheet.loc[v])
+            self.append_row(data_excel.data.loc[v])
 
     def check_column(self, excel: Excel):
         pass

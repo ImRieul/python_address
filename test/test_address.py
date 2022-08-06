@@ -30,7 +30,7 @@ class AnalyzeTypeTest(unittest.TestCase):
         address = Address(query=query, analyze_type=AnalyzeType.SIMILAR)
 
         # then
-        self.assertEqual(address.get_search_type(), AddressDataType.ROAD_ADDR)
+        self.assertEqual(AddressDataType.ALL_ADDR, address.get_search_type())
 
 
 class GetSearchTypeTest(unittest.TestCase):
@@ -42,7 +42,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressDataType.ROAD_ADDR)
+        self.assertEqual(AddressDataType.ALL_ADDR, search_type)
 
     def test_only_address(self):
         # given
@@ -62,7 +62,7 @@ class GetSearchTypeTest(unittest.TestCase):
         search_type = address.get_search_type()
 
         # then
-        self.assertEqual(search_type, AddressDataType.ROAD_ADDR)
+        self.assertEqual(AddressDataType.ALL_ADDR, search_type)
 
     def test_not_exist(self):
         # given

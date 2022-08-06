@@ -72,6 +72,5 @@ class AppendColumn(unittest.TestCase):
         # then
 
 
-
 if __name__ == '__main__':
     unittest.main()

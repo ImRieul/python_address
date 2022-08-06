@@ -39,11 +39,11 @@ class Address:
         elif self.__data.get('documents')[0].get('road_address') is not None:
             self.__search_type = AddressDataType.ROAD_ADDR
 
-    def is_search_type(self, *types: AddressDataType):
-        return self.__search_type in types
-
     def get_search_type(self):
         return self.__search_type
+
+    def is_search_type(self, *types: AddressDataType):
+        return self.__search_type in types
 
     def get_address_name(self, key: Union[AddressEnum, RoadAddressEnum]) -> str:
         if key == RoadAddressEnum.FULL_NAME:
