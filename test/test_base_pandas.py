@@ -516,9 +516,9 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3, 33]
         
         # when
-        # column 크기에 맞지 않는 데이터는 입력되지 않는다.
-        # 1. 옵션을 제공해서 크기가 넘어가더라도 자동으로 column의 내용을 채우도록 한다
-        # 2. 옵션은 굳이 넣지 않는다.
+        # todo column 크기에 맞지 않는 데이터는 입력되지 않는다.
+        #  1. 옵션을 제공해서 크기가 넘어가더라도 자동으로 column의 내용을 채우도록 한다
+        #  2. 옵션은 굳이 넣지 않는다.
         bp.set_row_data(set_row_data, 'ㄷ')
 
         # then
