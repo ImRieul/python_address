@@ -2,7 +2,39 @@ import unittest
 
 import pandas
 
+from error.error_base_dataframe import *
 from main.pandas_crud import BaseDataFrame
+
+
+class testBaseDataFrame(BaseDataFrame):
+    def __init__(self, df_dataframe: pandas.DataFrame):
+        super().__init__(df_dataframe)
+
+    def append_over_row_data(self, over_row: int) -> None:
+        super()._append_over_column(over_row)
+
+
+class _AppendOverColumnData(unittest.TestCase):
+    def test_ok(self):
+        # given
+        bp = testBaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+
+        # when
+        bp.append_over_row_data(2)
+
+        # thens
+        self.assertEqual(['a', 'row_index_2', 'row_index_3'], bp.get_columns_name())
+
+    def test_(self):
+        pass
+        # given
+
+        # when
+
+        # then
 
 
 class GetRowIndex(unittest.TestCase):
@@ -135,6 +167,58 @@ class GetColumnsName(unittest.TestCase):
 
         # then
         self.assertNotEqual(column_name, ['ㄱ', 'ㄴ'])
+
+
+class GetRowIndexToName(unittest.TestCase):
+    def test_ok(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+
+        # when
+        get_row_name_index = bp.get_row_index_to_name('ㄱ')
+
+        # then
+        self.assertEqual(0, get_row_name_index)
+
+    def test_input_row_index(self):
+        with self.assertRaises(ValueError):  # then
+            # given
+            bp = BaseDataFrame(pandas.DataFrame(
+                data={'a': [1, 2]},
+                index=['ㄱ', 'ㄴ'],
+            ))
+
+            # when
+            bp.get_row_index_to_name(0)
+
+
+class GetColumnIndexToName(unittest.TestCase):
+    def test_ok(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+
+        # when
+        get_column_name_index = bp.get_column_index_to_name('a')
+
+        # then
+        self.assertEqual(0, get_column_name_index)
+
+    def test_input_column_index(self):
+        with self.assertRaises(ValueError):  # then
+            # given
+            bp = BaseDataFrame(pandas.DataFrame(
+                data={'a': [1, 2]},
+                index=['ㄱ', 'ㄴ'],
+            ))
+
+            # when
+            bp.get_column_index_to_name(0)
 
 
 class IsRow(unittest.TestCase):
@@ -479,7 +563,39 @@ class GetColumnData(unittest.TestCase):
 
 
 class SetRowData(unittest.TestCase):
-    def test_row_index_name_none_ok(self):
+    # todo 테스트 한 것들
+    #  1. 데이터 수정
+    #  2. column이 초과됐으면 컬러 생성
+    #  3. column index를 기준으로 데이터 입력
+    def test_row_name_ok(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3]
+
+        # when
+        bp.set_row_data(set_row_data, row_name='ㄷ')
+
+        # then
+        self.assertEqual([3], bp.get_row_data(row_name='ㄷ'))
+
+    def test_row_name_exist(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3]
+
+        # when
+        bp.set_row_data(set_row_data, row_name='ㄱ')
+
+        # then
+        self.assertEqual([3], bp.get_row_data(row_name='ㄱ'))
+
+    def test_row_index_ok(self):
         # given
         bp = BaseDataFrame(pandas.DataFrame(
             data={'a': [1, 2]},
@@ -489,11 +605,11 @@ class SetRowData(unittest.TestCase):
 
         # when
         bp.set_row_data(set_row_data)
-        
-        # then
-        self.assertEqual([3], bp.get_row_data(row_index=bp.get_row_index() - 1))
 
-    def test_row_index_name_exist_ok(self):
+        # then
+        self.assertEqual([3], bp.get_row_data(row_index=2))
+
+    def test_row_index_exist(self):
         # given
         bp = BaseDataFrame(pandas.DataFrame(
             data={'a': [1, 2]},
@@ -502,27 +618,62 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data(set_row_data, 'ㄷ')
+        bp.set_row_data(set_row_data, row_index=1)
 
         # then
-        self.assertEqual([3], bp.get_row_data(row_name='ㄷ'))
+        self.assertEqual([3], bp.get_row_data(row_index=1))
 
-    def test_data_over_column(self):
+    def test_over_column_set_true__row_name(self):
         # given
         bp = BaseDataFrame(pandas.DataFrame(
             data={'a': [1, 2]},
             index=['ㄱ', 'ㄴ'],
         ))
         set_row_data = [3, 33]
-        
+
         # when
-        # todo column 크기에 맞지 않는 데이터는 입력되지 않는다.
-        #  1. 옵션을 제공해서 크기가 넘어가더라도 자동으로 column의 내용을 채우도록 한다
-        #  2. 옵션은 굳이 넣지 않는다.
-        bp.set_row_data(set_row_data, 'ㄷ')
+        bp.set_row_data(set_row_data, row_name='ㄷ', over_set=True)
 
         # then
         self.assertEqual([3, 33], bp.get_row_data(row_name='ㄷ'))
+
+    def test_over_column_set_false__row_name(self):
+        with self.assertRaises(BaseDataFrameSetOverRow):  # then
+            # given
+            bp = BaseDataFrame(pandas.DataFrame(
+                data={'a': [1, 2]},
+                index=['ㄱ', 'ㄴ'],
+            ))
+            set_row_data = [3, 33]
+
+            # when
+            bp.set_row_data(set_row_data, row_name='ㄷ', over_set=False)
+
+    def test_over_column_set_true__row_index(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3, 33]
+
+        # when
+        bp.set_row_data(set_row_data, row_index=2, over_set=True)
+
+        # then
+        self.assertEqual([3, 33], bp.get_row_data(row_index=2))
+
+    def test_over_column_set_false__row_index(self):
+        with self.assertRaises(BaseDataFrameSetOverRow):  # then
+            # given
+            bp = BaseDataFrame(pandas.DataFrame(
+                data={'a': [1, 2]},
+                index=['ㄱ', 'ㄴ'],
+            ))
+            set_row_data = [3, 33]
+
+            # when
+            bp.set_row_data(set_row_data, row_index=2, over_set=False)
 
 
 if __name__ == '__main__':

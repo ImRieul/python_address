@@ -15,3 +15,7 @@ class ExcelNotEqualRowLength(Exception):
             f"class column: {column_list}"
         )
 
+
+class BaseDataFrameSetOverRow(Exception):
+    def __init__(self):
+        super(BaseDataFrameSetOverRow, self).__init__('Over dataframe row. please "over_set=true"')
