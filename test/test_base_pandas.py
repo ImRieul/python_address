@@ -632,7 +632,7 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3, 33]
 
         # when
-        bp.set_row_data(set_row_data, row_name='ㄷ', over_set=True)
+        bp.set_row_data(set_row_data, row_name='ㄷ', over_column=True)
 
         # then
         self.assertEqual([3, 33], bp.get_row_data(row_name='ㄷ'))
@@ -647,7 +647,7 @@ class SetRowData(unittest.TestCase):
             set_row_data = [3, 33]
 
             # when
-            bp.set_row_data(set_row_data, row_name='ㄷ', over_set=False)
+            bp.set_row_data(set_row_data, row_name='ㄷ', over_column=False)
 
     def test_over_column_set_true__row_index(self):
         # given
@@ -658,7 +658,7 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3, 33]
 
         # when
-        bp.set_row_data(set_row_data, row_index=2, over_set=True)
+        bp.set_row_data(set_row_data, row_index=2, over_column=True)
 
         # then
         self.assertEqual([3, 33], bp.get_row_data(row_index=2))
@@ -673,7 +673,7 @@ class SetRowData(unittest.TestCase):
             set_row_data = [3, 33]
 
             # when
-            bp.set_row_data(set_row_data, row_index=2, over_set=False)
+            bp.set_row_data(set_row_data, row_index=2, over_column=False)
 
 
 if __name__ == '__main__':

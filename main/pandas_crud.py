@@ -68,11 +68,11 @@ class BaseDataFrame:
             return list(self.data.get(self.data.columns[column_index]))
 
     def set_row_data(self, input_data: Union[list, str], row_name: str = None, row_index: int = None,
-                     column_index: Union[int, str] = 0, over_set: bool = False):
+                     column_index: Union[int, str] = 0, over_column: bool = False):
         # column이 초과됐으면 컬럼 생성
         if isinstance(input_data, list) \
                 and len(input_data) + column_index > self.get_column_index():
-            if over_set:
+            if over_column:
                 self._append_over_column(len(input_data) + column_index - self.get_column_index())
             else:
                 raise BaseDataFrameSetOverRow
@@ -84,7 +84,9 @@ class BaseDataFrame:
                 if column_index > 0 else input_data
         elif row_index is not None:
             # column_index로 이름 변경
-            self.data.iloc[row_index] = self._data_slice(self.data.iloc[row_index], input_data, column_index) \
+            self.data.loc[self.get_rows_name()[row_index]] = self._data_slice(self.data.iloc[row_index], input_data, column_index) \
                 if column_index > 0 else input_data
         else:
             self.data.loc[len(self.data.index)] = input_data
+
+    # def set_row_data_to_index(self, input_data: Union[list, str], row_index: int = None, column_index: int = 0, over_column: bool = False):

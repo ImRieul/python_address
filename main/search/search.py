@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
     with Excel(file_name, index_row=3, sheet_name='Sheet1') as excel:
         search_address = Search(list(excel_columns.keys()))
-        search_address.to_address(excel, '주소')
+        search_address.to_address(excel, SearchType.COLUMNS, '주소')
 
         # 같은 컬럼 이름이 있으면 .1부터 시작해서 숫자가 더해짐.
         for key, value in excel_columns.items():
