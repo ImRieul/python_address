@@ -3,8 +3,7 @@ import requests
 import enum
 
 import setting
-from error.error_address import *
-from main.address.address_enum import *
+from main.enum.address_enum import *
 
 
 class Address:

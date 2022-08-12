@@ -11,30 +11,8 @@ class testBaseDataFrame(BaseDataFrame):
         super().__init__(df_dataframe)
 
     def append_over_row_data(self, over_row: int) -> None:
-        super()._append_over_column(over_row)
+        super()._append_column(over_row)
 
-
-class _AppendOverColumnData(unittest.TestCase):
-    def test_ok(self):
-        # given
-        bp = testBaseDataFrame(pandas.DataFrame(
-            data={'a': [1, 2]},
-            index=['ㄱ', 'ㄴ'],
-        ))
-
-        # when
-        bp.append_over_row_data(2)
-
-        # thens
-        self.assertEqual(['a', 'row_index_2', 'row_index_3'], bp.get_columns_name())
-
-    def test_(self):
-        pass
-        # given
-
-        # when
-
-        # then
 
 
 class GetRowIndex(unittest.TestCase):
@@ -562,6 +540,22 @@ class GetColumnData(unittest.TestCase):
         self.assertIsNone(column_data)
 
 
+class SetRowDataToName(unittest.TestCase):
+    def test_ok(self):
+        # given
+        bp = BaseDataFrame(pandas.DataFrame(
+            data={'a': [1, 2]},
+            index=['ㄱ', 'ㄴ'],
+        ))
+        set_row_data = [3]
+
+        # when
+        bp.set_row_data_to_name(set_row_data)
+
+        # then
+        self.assertEqual(set_row_data, bp.get_row_data(row_index=2))
+
+
 class SetRowData(unittest.TestCase):
     # todo 테스트 한 것들
     #  1. 데이터 수정
@@ -576,7 +570,7 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data(set_row_data, row_name='ㄷ')
+        bp.set_row_data_to_name(set_row_data, row_name='ㄷ')
 
         # then
         self.assertEqual([3], bp.get_row_data(row_name='ㄷ'))
@@ -590,7 +584,7 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data(set_row_data, row_name='ㄱ')
+        bp.set_row_data_to_name(set_row_data, row_name='ㄱ')
 
         # then
         self.assertEqual([3], bp.get_row_data(row_name='ㄱ'))
@@ -604,7 +598,7 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data(set_row_data)
+        bp.set_row_data_to_index(set_row_data)
 
         # then
         self.assertEqual([3], bp.get_row_data(row_index=2))
@@ -618,10 +612,10 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data(set_row_data, row_index=1)
+        bp.set_row_data_to_index(set_row_data, row_index=1)
 
         # then
-        self.assertEqual([3], bp.get_row_data(row_index=1))
+        self.assertEqual(set_row_data, bp.get_row_data(row_index=1))
 
     def test_over_column_set_true__row_name(self):
         # given
