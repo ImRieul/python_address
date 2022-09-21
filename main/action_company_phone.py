@@ -60,7 +60,8 @@ if __name__ == '__main__':
 
         for index, company in enumerate(excel.get_column_data_from_name(company_column_name)):
             # 이미 전화번호가 입력되어 있으면
-            if company_phone_list[index] != '' or company_phone_list[index] is None:
+            if company_phone_list[index] != '':
+                company_phone_list[index] = company_phone_list[index]
                 continue
 
             # x, y값이 없으면 전국을 조회하는 거 같다,,
@@ -130,4 +131,4 @@ if __name__ == '__main__':
             column_name='소재지전화'
         )
 
-        print(f'에러난 개수는 {company_error_count}개 입니다.')
+        print(f'에러난 개수는 총 {len(company_phone_list)}개수 중 {company_error_count}개 입니다.')
