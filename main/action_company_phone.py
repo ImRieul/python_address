@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     with Excel(file_name, index_row=1, sheet_name='Sheet1') as excel:
         search_address = Search(list(excel_columns.keys()) + list(point_columns.keys()))
-        search_address.to_address(excel, SearchType.COLUMNS, excel_columns.get(RoadAddressEnum.FULL_NAME))
+        search_address.to_address(excel, SearchType.COLUMNS, '지번주소')
 
         # 같은 컬럼 이름이 있으면 .1부터 시작해서 숫자가 더해짐.
         point_x_list = search_address.get_column_data_from_name(AddressEnum.X)
@@ -68,13 +68,18 @@ if __name__ == '__main__':
             )
             if company == '':
                 company_phone_list[index] = ''
+            elif company_api.get_company_list() is None:
+                company_phone_list[index] = ''
+            elif len(company_api.get_company_list()) == 0:
+                company_phone_list[index] = ''
+
+            elif
+
             elif len(company_api.get_company_list()) > 1:
                 print(company_api.get_company_list_name())
                 input_index: int = int(input('올바른 검색 결과의 index를 입력해주세요'))
 
                 company_phone_list[index] = company_api.get_company_from_index(input_index).phone
-            elif len(company_api.get_company_list()) == 0:
-                company_phone_list[index] = ''
             elif len(company_api.get_company_list()) == 1:
                 company_phone_list[index] = company_api.get_company_from_index(0).phone
 

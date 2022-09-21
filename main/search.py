@@ -49,7 +49,7 @@ class Search(BaseDataFrame):
                     continue
 
                 query = slice_address(value)
-                address = search_yourself(value, Address(query=query))
+                address = search_yourself(value, Address(query=query), excel_index=index)
 
                 self._append_row([address.get_address_name(i) for i in self.put_columns])
 
@@ -89,11 +89,11 @@ def slice_address(address_name: str):
     return add
 
 
-def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
+def search_yourself(fail_query: str, fail_address: Address, excel_index: int, count: int = 1, ) -> Address:
     if fail_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR, AddressDataType.ALL_ADDR):
         return fail_address
 
-    print(f"주소가 검색되지 않았습니다. 정확한 주소를 입력해주세요. ({count} 번째)")
+    print(f"주소가 검색되지 않았습니다. 정확한 주소를 입력해주세요. (row : {excel_index}, {count} 번째)")
     print('검색한 문자열:', fail_query)
     print('넘기고 싶다면 pass를 입력하세요')
     query = input()
@@ -104,7 +104,7 @@ def search_yourself(fail_query: str, fail_address: Address, count: int = 1):
     search_address = Address(query=query, analyze_type=fail_address.analyze_type)
     return search_address \
         if search_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR) \
-        else search_yourself(query, search_address, count + 1)
+        else search_yourself(query, search_address, excel_index, count + 1)
 
 
 # if __name__ == '__main__':
