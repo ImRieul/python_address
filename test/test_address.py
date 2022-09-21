@@ -1,6 +1,6 @@
 import unittest
 
-from main.enum.address_enum import *
+from main.enums.address_enum import *
 
 query_address = '대전 서구 둔산동 1420'
 query_road_address = '대전 서구 둔산로 100'

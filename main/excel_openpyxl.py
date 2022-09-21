@@ -26,8 +26,8 @@ class Excel:
             if platform.system() != 'Windows' \
             else f'{setting.ROOT_PROJECT}\\{self.__name}'
 
-        if not isinstance(self.__name, str):
-            raise ExcelFileNameTypeError
+        # if not isinstance(self.__name, str):
+        #     raise ExcelFileNameTypeError
         try:
             self.workbook = openpyxl.load_workbook(file_path)
         except FileNotFoundError as e:
@@ -40,9 +40,10 @@ class Excel:
         return self.__name
 
     def get_sheet_name(self, name: str | None = None) -> str:
-        if name is not None and not isinstance(name, str):
-            raise ExcelSheetNameTypeError
-        elif name is None:
+        # if name is not None and not isinstance(name, str):
+        #     raise ExcelSheetNameTypeError
+        # elif name is None:
+        if name is None:
             return self.workbook.active.title
         else:
             return self.workbook[name].title

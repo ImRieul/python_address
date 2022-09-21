@@ -13,6 +13,5 @@ def list_flat(list_mix: list, this: list = None) -> list:
 def list_insert(data: list, insert_data: list, start_index: int = None) -> list:
     if start_index is None:
         start_index = len(data)
-    result = data
-    result.insert(start_index, insert_data)
-    return list_flat(result)
+    data.insert(start_index, insert_data)
+    return list_flat(data)

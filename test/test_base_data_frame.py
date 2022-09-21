@@ -3,7 +3,7 @@ import unittest
 import pandas
 
 from error.error_base_dataframe import *
-from main.pandas_crud import BaseDataFrame
+from main.base_data_frame import BaseDataFrame
 
 
 class testBaseDataFrame(BaseDataFrame):
@@ -14,7 +14,6 @@ class testBaseDataFrame(BaseDataFrame):
         super()._append_column(over_row)
 
 
-
 class GetRowIndex(unittest.TestCase):
     def test_ok(self):
         # given
@@ -22,7 +21,7 @@ class GetRowIndex(unittest.TestCase):
         bp = BaseDataFrame(df)
 
         # when
-        row_index = bp.get_row_index()
+        row_index = bp.get_row_size()
 
         # then
         self.assertEqual(row_index, 2)
@@ -33,7 +32,7 @@ class GetRowIndex(unittest.TestCase):
         bp = BaseDataFrame(df)
 
         # when
-        row_index = bp.get_row_index()
+        row_index = bp.get_row_size()
 
         # then
         self.assertNotEqual(row_index, 3)
@@ -47,7 +46,7 @@ class GetColumnIndex(unittest.TestCase):
         }))
 
         # when
-        column_index = bp.get_column_index()
+        column_index = bp.get_column_size()
 
         # then
         self.assertEqual(column_index, 2)
@@ -59,7 +58,7 @@ class GetColumnIndex(unittest.TestCase):
         }))
 
         # when
-        column_index = bp.get_column_index()
+        column_index = bp.get_column_size()
 
         # then
         self.assertNotEqual(column_index, 3)
@@ -156,7 +155,7 @@ class GetRowIndexToName(unittest.TestCase):
         ))
 
         # when
-        get_row_name_index = bp.get_row_index_to_name('ㄱ')
+        get_row_name_index = bp.get_row_index('ㄱ')
 
         # then
         self.assertEqual(0, get_row_name_index)
@@ -170,7 +169,7 @@ class GetRowIndexToName(unittest.TestCase):
             ))
 
             # when
-            bp.get_row_index_to_name(0)
+            bp.get_row_index(0)
 
 
 class GetColumnIndexToName(unittest.TestCase):
@@ -182,7 +181,7 @@ class GetColumnIndexToName(unittest.TestCase):
         ))
 
         # when
-        get_column_name_index = bp.get_column_index_to_name('a')
+        get_column_name_index = bp.get_column_index('a')
 
         # then
         self.assertEqual(0, get_column_name_index)
@@ -196,7 +195,7 @@ class GetColumnIndexToName(unittest.TestCase):
             ))
 
             # when
-            bp.get_column_index_to_name(0)
+            bp.get_column_index(0)
 
 
 class IsRow(unittest.TestCase):
@@ -550,7 +549,7 @@ class SetRowDataToName(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data_to_name(set_row_data)
+        bp.set_row_data_from_name(set_row_data)
 
         # then
         self.assertEqual(set_row_data, bp.get_row_data(row_index=2))
@@ -570,7 +569,7 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data_to_name(set_row_data, row_name='ㄷ')
+        bp.set_row_data_from_name(set_row_data, row_name='ㄷ')
 
         # then
         self.assertEqual([3], bp.get_row_data(row_name='ㄷ'))
@@ -584,38 +583,10 @@ class SetRowData(unittest.TestCase):
         set_row_data = [3]
 
         # when
-        bp.set_row_data_to_name(set_row_data, row_name='ㄱ')
+        bp.set_row_data_from_name(set_row_data, row_name='ㄱ')
 
         # then
         self.assertEqual([3], bp.get_row_data(row_name='ㄱ'))
-
-    def test_row_index_ok(self):
-        # given
-        bp = BaseDataFrame(pandas.DataFrame(
-            data={'a': [1, 2]},
-            index=['ㄱ', 'ㄴ'],
-        ))
-        set_row_data = [3]
-
-        # when
-        bp.set_row_data_to_index(set_row_data)
-
-        # then
-        self.assertEqual([3], bp.get_row_data(row_index=2))
-
-    def test_row_index_exist(self):
-        # given
-        bp = BaseDataFrame(pandas.DataFrame(
-            data={'a': [1, 2]},
-            index=['ㄱ', 'ㄴ'],
-        ))
-        set_row_data = [3]
-
-        # when
-        bp.set_row_data_to_index(set_row_data, row_index=1)
-
-        # then
-        self.assertEqual(set_row_data, bp.get_row_data(row_index=1))
 
     def test_over_column_set_true__row_name(self):
         # given

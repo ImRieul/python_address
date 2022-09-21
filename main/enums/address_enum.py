@@ -26,7 +26,7 @@ class AddressEnum(Enum):
     H_CODE = 'h_code'
     MOUNTAIN_YN = 'mountain_yn'
     X = 'x'
-    y = 'y'
+    Y = 'y'
 
 
 class RoadAddressEnum(Enum):
@@ -41,5 +41,5 @@ class RoadAddressEnum(Enum):
     UNDERGROUND_YN = 'underground_yn'
     ZONE_NO = 'zone_no'
     X = 'x'
-    y = 'y'
+    Y = 'y'
     FULL_NAME = 'full_name'

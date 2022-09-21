@@ -4,7 +4,7 @@ import platform
 
 import setting
 from error.error_excel import *
-from main.pandas_crud import BaseDataFrame
+from main.base_data_frame import BaseDataFrame
 
 
 # 만들고 싶은 기능
@@ -19,13 +19,14 @@ class Excel(BaseDataFrame):
         self.__index_col = index_col - 1 if index_col > 0 else 0
         self.__path = f'{setting.ROOT_PROJECT}\\' if platform.system() == 'Windows' else \
             f'{setting.ROOT_PROJECT}/'
-        self.data = None
+        self.data: pandas.DataFrame = pandas.DataFrame([])
         super().__init__(self.__read_excel())
 
         self.__read_excel()
 
     def __enter__(self):
-        return self.data.fillna('')
+        # return self.data.fillna('')
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         # 행열 위치를 초기화하는 로직 만들 예정 -> 굳이 필요할까..

@@ -46,6 +46,17 @@ class ListInsert(unittest.TestCase):
         # then
         self.assertEqual([1, 2, 3], insert)
 
+    def test_empty_data_and_insert_data(self):
+        # given
+        empty_data = []
+        insert_data = []
+
+        # when
+        insert = list_insert(empty_data, insert_data)
+
+        # then
+        self.assertEqual([], insert_data)
+
     def test_empty_data_start_index(self):
         # given
         empty_data = []
@@ -58,7 +69,7 @@ class ListInsert(unittest.TestCase):
         # then
         self.assertEqual([1, 2, 3], insert)
 
-    def test_empty_insert_data(self):
+    def test_data_and_empty_insert_data(self):
         # given
         data = [1, 2, 3]
         empty_insert_data = []
@@ -81,13 +92,49 @@ class ListInsert(unittest.TestCase):
         # then
         self.assertEqual([1, 2, 3], insert)
 
-    def test_data_insert_data(self):
+    def test_data_and_insert_data(self):
         # given
         data = [1, 2, 3]
         insert_data = [4, 5, 6]
 
         # when
         insert = list_insert(data, insert_data)
+
+        # then
+        self.assertEqual([1, 2, 3, 4, 5, 6], insert)
+
+    def test_start_index_zero(self):
+        # given
+        data = [1, 2, 3]
+        insert_data = [4, 5, 6]
+        start_index = 0
+
+        # when
+        insert = list_insert(data, insert_data, start_index)
+
+        # then
+        self.assertEqual([4, 5, 6, 1, 2, 3], insert)
+
+    def test_start_index_middle(self):
+        # given
+        data = [1, 2, 3]
+        insert_data = [4, 5, 6]
+        start_index = 2
+
+        # when
+        insert = list_insert(data, insert_data, start_index)
+
+        # then
+        self.assertEqual([1, 2, 4, 5, 6, 3], insert)
+
+    def test_start_index_last(self):
+        # given
+        data = [1, 2, 3]
+        insert_data = [4, 5, 6]
+        start_index = len(data)
+
+        # when
+        insert = list_insert(data, insert_data, start_index)
 
         # then
         self.assertEqual([1, 2, 3, 4, 5, 6], insert)

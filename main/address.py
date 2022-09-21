@@ -3,7 +3,7 @@ import requests
 import enum
 
 import setting
-from main.enum.address_enum import *
+from main.enums.address_enum import *
 
 
 class Address:
