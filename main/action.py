@@ -74,14 +74,14 @@ if __name__ == '__main__':
             )
             if company == '':
                 company_phone_list[index] = ''
-            elif len(company_api.get_company_list()) > 1:
-                print(company_api.get_company_list_name())
+            elif len(company_api.get_list()) > 1:
+                print(company_api.get_list_name())
                 input_index: int = int(input('올바른 검색 결과의 index를 입력해주세요'))
 
                 company_phone_list[index] = company_api.get_company_from_index(input_index).phone
-            elif len(company_api.get_company_list()) == 0:
+            elif len(company_api.get_list()) == 0:
                 company_phone_list[index] = ''
-            elif len(company_api.get_company_list()) == 1:
+            elif len(company_api.get_list()) == 1:
                 company_phone_list[index] = company_api.get_company_from_index(0).phone
 
         excel.set_column_data_from_name(
