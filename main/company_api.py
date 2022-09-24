@@ -24,8 +24,6 @@ class CompanyApi:
     def __response(self, name, x, y) -> dict:
         if self.query.get('query') is not None:
             del (self.query['query'])
-        # if self.query.get('radius') is None:
-        #     self.query['radius'] = '50'
 
         request_url = '?' + 'query=' + str(name) + '&' + \
                       'x=' + str(x) + '&' + \

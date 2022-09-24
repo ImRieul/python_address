@@ -7,7 +7,7 @@ from main.search import Search
 if __name__ == '__main__':
 
     # given
-    file_name = '일반음식점현황_220920_김동건.xlsx'  # 파일 이름
+    file_name = '일반음식점 현황_220920_김동건.xlsx'  # 파일 이름
     count_error = 0
     company_column_name = '업소명'
     excel_columns = {
@@ -90,36 +90,18 @@ if __name__ == '__main__':
             company_address_list = list(map(lambda x: x.address_name, company_api.get_list()))
             company_road_address_list = list(map(lambda x: x.road_address_name, company_api.get_list()))
 
-            # # 업체 검색 결과 중 원하는 업체가 있을 때
-            # if company in company_api.get_list_name():
-            #     company_phone_list[index] = company_api.get_company_from_index(company_api.get_list_name().index(company)).phone
-
             # 업체 검색 결과 중 지번주소가 정확할 때
             if excel_address_name in company_address_list:
                 company_phone_list[index] = company_api.get_company_from_index(
                     company_address_list.index(excel_address_name)
                 ).phone
 
+            # 업체 검색 결과 중 도로명주소가 정확할 때
             elif excel_road_address_name in company_road_address_list:
                 company_phone_list[index] = company_api.get_company_from_index(
                     company_road_address_list.index(excel_road_address_name)
                 ).phone
 
-            # 업체 검색 결과 원하는 업체가 없거나 인식을 못할 때
-            # 어짜피 찾기 힘드려나,, 일단 주석 처리
-            # elif len(company_api.get_list()) > 1:
-            #     print(company_api.get_list_name())
-            #     print(f'검색한 업체 이름 : {company}, 현재 row : {index}')
-            #     input_index: int = int(input('올바른 검색 결과의 index를 입력해주세요'))
-            #
-            #     if input_index > len(company_api.get_list()):
-            #         print('Over index, 빈 값을 입력합니다.')
-            #         company_phone_list[index] = ''
-            #         company_error_count += 1
-            #     else:
-            #         print(f'다음 주소를 입력합니다 : {company_api.get_company_from_index(input_index).address_name}')
-            #         company_phone_list[index] = company_api.get_company_from_index(input_index).phone
-            #
             elif len(company_api.get_list()) == 1:
                 company_phone_list[index] = company_api.get_company_from_index(0).phone
             else:

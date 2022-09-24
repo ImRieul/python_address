@@ -181,7 +181,7 @@ class BaseDataFrame:
         self.data.iloc[row_index] = input_row
         return list(self.data.iloc[row_index])
 
-    def set_column_data_from_index(self, input_column, column_index: int):
+    def set_column_data_from_index(self, input_column, column_index: int) -> list:
         if self.get_row_size() < len(input_column) or self.get_column_size() < column_index:
             raise BaseDataFrameSetOverRow
         self.data.iloc[[column_index]] = input_column
