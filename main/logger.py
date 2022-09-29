@@ -1,38 +1,75 @@
 import logging
+import logging.config
 import os.path
 import sys
 import config
 
-from main.enums.loggerEnum import LoggerEnum
+from main.enums.loggerEnum import *
 
 
 class Logger:
-    def __init__(self, path: str = None):
-        self.path = path
-        self.base = logging.getLogger(self.__directory())
+    def __init__(self):
+        self.path = config.root_path()
+        self.__level = LoggerEnum.DEBUG
+        self.__format = [LoggerFormat.ASCTIME, LoggerFormat.NAME, LoggerFormat.LEVELNAME, LoggerFormat.MESSAGE]
+        self.__filename = config.path_encoding(self.path + "/example")
 
-        logging.basicConfig(
-            level=logging.INFO,
-            filename=f'{config.ROOT_PATH}/example.log',
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
+        self.logger = logging.getLogger(config.where_function_path(2))  # 이후 self.__logger로 이름 변경
+        self.handler = logging.StreamHandler()
+        # self.file_handler = logging.FileHandler(f'{self.__filename}.log')
+        self.set_filename(self.__filename)
 
-    def __directory(self) -> str:
-        active_module = sys._getframe(1).f_code.co_name \
-            if sys._getframe(2).f_code.co_name == '<module>' \
-            else sys._getframe(2).f_code.co_name
+        # logging.basicConfig(level=self.__level.value, format=' - '.join(map(lambda x: x.value, self.__format)), filename=f'{self.__filename}.log')
 
-        return active_module \
-            if self.path is None \
-            else f'{self.path.replace(config.ROOT_PATH, "")} - function<{active_module}>'
+        self.set_level(self.__level)
+        self.set_format(self.__format)
 
-    def info_log(self, message: str):
-        self.base.info(message)
+    def info(self, message: str):
+        self.logger.info(message)
+
+    def debug(self, message: str):
+        self.logger.debug(message)
+
+    def warning(self, message: str):
+        self.logger.warning(message)
+
+    def critical(self, message: str):
+        self.logger.critical(message)
+
+    def error(self, message: str):
+        self.logger.error(message)
+
+    def set_level(self, level: LoggerEnum):
+        self.__level = level
+        self.handler.setLevel(self.__level.value)
+        self.logger.addHandler(self.handler)
+
+    def set_format(self, format: list[LoggerFormat]):
+        self.__format = format
+        self.handler.setFormatter(' - '.join(map(lambda x: x.value, self.__format)))
+        self.logger.addHandler(self.handler)
+
+    def set_filename(self, name: str):
+        result = logging.FileHandler(filename=f'{config.path_encoding(name)}.log')
+        result.setLevel(self.__level.value)
+        result.setFormatter(' - '.join(map(lambda x: x.value, self.__format)))
+        self.logger.addHandler(result)
+
+    # def __set_basic_config(self,
+    #                        level: LoggerEnum = LoggerEnum.DEBUG,
+    #                        filename: str = None,
+    #                        format: str = None):
+    #
+    #     logging.basicConfig(level=level.value,
+    #                         filename=filename,
+    #                         format=format,
+    #                         encoding='utf-8')
 
 
 if __name__ == '__main__':
-    Logger(__file__).info_log('hello logger')
-
-    print(3, os.path.basename(__file__))
-    print(4, os.path.dirname(__file__))
-    print(8, config.ROOT_PATH)
+    logger = Logger()
+    logger.info('hello info')
+    logger.debug('hello debug')
+    logger.set_level(LoggerEnum.WARNING)
+    logger.critical('input level critical, set level warning')
+    logger.debug('input level debug, set level debug')
