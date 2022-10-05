@@ -1,5 +1,18 @@
-%(asctime)s - %(name)s - %(levelname)s - %(message)s
-%(asctime)s - %(name)s - %(levelname)s - %(message)s
-%(asctime)s - %(name)s - %(levelname)s - %(message)s
-%(asctime)s - %(name)s - %(levelname)s - %(message)s
-%(asctime)s - %(name)s - %(levelname)s - %(message)s
+2022-09-29 17:45:05,646 - <module> - INFO - hello info
+2022-09-29 17:45:05,647 - <module> - DEBUG - hello debug
+2022-09-29 17:45:05,647 - <module> - CRITICAL - input level critical, set level warning
+2022-09-30 12:55:35,447 - <module> - INFO - hello info
+2022-09-30 12:55:35,447 - <module> - DEBUG - hello debug
+2022-09-30 12:55:35,448 - <module> - CRITICAL - input level critical, set level warning
+2022-09-30 12:55:46,369 - <module> - INFO - hello info
+2022-09-30 12:55:46,369 - <module> - DEBUG - hello debug
+2022-09-30 12:55:46,369 - <module> - CRITICAL - input level critical, set level warning
+2022-09-30 12:55:47,509 - <module> - INFO - hello info
+2022-09-30 12:55:47,509 - <module> - DEBUG - hello debug
+2022-09-30 12:55:47,509 - <module> - CRITICAL - input level critical, set level warning
+2022-10-04 15:24:18,838 - info_print - INFO - hello entity file
+2022-10-04 15:35:55,388 - info_print - INFO - hello entity file
+2022-10-05 11:21:45,230 - __init__ - ERROR - requests error, if request page is html
+2022-10-05 16:49:55,994 - __init__ - INFO - AddressRepository response : <Response [200]>
+2022-10-05 17:18:57,979 - __init__ - INFO - AddressRepository response : <Response [200]>
+2022-10-05 17:20:28,309 - __init__ - INFO - AddressRepository response : <Response [200]>

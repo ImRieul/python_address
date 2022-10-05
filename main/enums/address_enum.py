@@ -14,6 +14,7 @@ class AddressDataType(Enum):
     BED_REQUEST = 'bed_request'
 
 
+# 사용하지 않음, 참고용
 class AddressEnum(Enum):
     ADDRESS_NAME = 'address_name'
     REGION_1DEPTH_NAME = 'region_1depth_name'
@@ -29,6 +30,7 @@ class AddressEnum(Enum):
     Y = 'y'
 
 
+# 사용하지 않음, 참고용
 class RoadAddressEnum(Enum):
     ADDRESS_NAME = 'address_name'
     REGION_1DEPTH_NAME = 'region_1depth_name'

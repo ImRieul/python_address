@@ -5,7 +5,7 @@ from typing import Any
 from main.excel import *
 from main.enums.search_enum import *
 from error.error_search import *
-from main.address_api import *
+from main.respository.address_api import *
 
 import pandas as pd
 
@@ -49,7 +49,7 @@ class Search(BaseDataFrame):
                     continue
 
                 query = slice_address(value)
-                address = search_yourself(value, Address(query=query), excel_index=index)
+                address = search_yourself(value, AddressApi(query=query), excel_index=index)
 
                 self._append_row([address.get_address_name(i) for i in self.put_columns])
 
@@ -89,7 +89,7 @@ def slice_address(address_name: str):
     return add
 
 
-def search_yourself(fail_query: str, fail_address: Address, excel_index: int, count: int = 1, ) -> Address:
+def search_yourself(fail_query: str, fail_address: AddressApi, excel_index: int, count: int = 1, ) -> AddressApi:
     if fail_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR, AddressDataType.ALL_ADDR):
         return fail_address
 
@@ -99,9 +99,9 @@ def search_yourself(fail_query: str, fail_address: Address, excel_index: int, co
     query = input()
 
     if query == 'pass' or 0 > count or count >= 3:
-        return Address(query='pass')
+        return AddressApi(query='pass')
 
-    search_address = Address(query=query, analyze_type=fail_address.analyze_type)
+    search_address = AddressApi(query=query, analyze_type=fail_address.analyze_type)
     return search_address \
         if search_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR) \
         else search_yourself(query, search_address, excel_index, count + 1)

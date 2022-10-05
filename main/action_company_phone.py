@@ -1,8 +1,6 @@
-from main.company_api import CompanyApi
+from main.respository.company_api import CompanyApi
 from main.enums.address_enum import RoadAddressEnum, AddressEnum
-from main.enums.search_enum import SearchType
 from main.excel import Excel
-from main.search import Search
 
 if __name__ == '__main__':
 

@@ -1,69 +1,84 @@
 import logging
-import logging.config
-import os.path
+# import logging.config
 import sys
-import config
+import main.config as config
 
 from main.enums.loggerEnum import *
 
+# 아직 깔끔하진 못하다,, 더 간결하고 읽기 쉽게 할 순 없을까?
+# TODO
+#   __init__ 내용을 간단하게 하기
+
 
 class Logger:
-    def __init__(self):
-        self.path = config.root_path()
-        self.__level = LoggerEnum.DEBUG
-        self.__format = [LoggerFormat.ASCTIME, LoggerFormat.NAME, LoggerFormat.LEVELNAME, LoggerFormat.MESSAGE]
-        self.__filename = config.path_encoding(self.path + "/example")
+    def __init__(self,
+                 level: LoggerEnum = LoggerEnum.DEBUG,
+                 format: list[LoggerEnum] = None,
+                 filename: str = 'example'
+                 ):
 
-        self.logger = logging.getLogger(config.where_function_path(2))  # 이후 self.__logger로 이름 변경
-        self.handler = logging.StreamHandler()
-        # self.file_handler = logging.FileHandler(f'{self.__filename}.log')
-        self.set_filename(self.__filename)
+        if format is None:
+            format = [LoggerFormat.ASCTIME, LoggerFormat.NAME, LoggerFormat.LEVELNAME, LoggerFormat.MESSAGE]
 
-        # logging.basicConfig(level=self.__level.value, format=' - '.join(map(lambda x: x.value, self.__format)), filename=f'{self.__filename}.log')
+        self.__handler_console = logging.StreamHandler(sys.stdout)
+        self.__handler_file = logging.FileHandler(filename=f'{filename}.log')
 
-        self.set_level(self.__level)
-        self.set_format(self.__format)
+        self.__logger = logging.getLogger(config.where_function_path(1))
+        self.__logger.setLevel(logging.DEBUG)
+
+        self.__level = self.set_level(level)
+        self.__format = self.set_format(format)
+        self.__filename = self.set_filename(config.path_encoding(f'{config.root_path()}/{filename}'))
 
     def info(self, message: str):
-        self.logger.info(message)
+        self.__logger.info(message)
 
     def debug(self, message: str):
-        self.logger.debug(message)
+        self.__logger.debug(message)
 
     def warning(self, message: str):
-        self.logger.warning(message)
+        self.__logger.warning(message)
 
     def critical(self, message: str):
-        self.logger.critical(message)
+        self.__logger.critical(message)
 
     def error(self, message: str):
-        self.logger.error(message)
+        self.__logger.error(message)
 
     def set_level(self, level: LoggerEnum):
-        self.__level = level
-        self.handler.setLevel(self.__level.value)
-        self.logger.addHandler(self.handler)
+        self.__handler_console.setLevel(level.value)
+        self.__handler_file.setLevel(level.value)
+
+        self.__add_handler()
+
+        return level
 
     def set_format(self, format: list[LoggerFormat]):
-        self.__format = format
-        self.handler.setFormatter(' - '.join(map(lambda x: x.value, self.__format)))
-        self.logger.addHandler(self.handler)
+        format = logging.Formatter(' - '.join(map(lambda x: x.value, format)))
+
+        self.__handler_console.setFormatter(format)
+        self.__handler_file.setFormatter(format)
+
+        self.__add_handler()
+
+        return format
 
     def set_filename(self, name: str):
-        result = logging.FileHandler(filename=f'{config.path_encoding(name)}.log')
-        result.setLevel(self.__level.value)
-        result.setFormatter(' - '.join(map(lambda x: x.value, self.__format)))
-        self.logger.addHandler(result)
+        name = f'{config.path_encoding(name)}.log'
 
-    # def __set_basic_config(self,
-    #                        level: LoggerEnum = LoggerEnum.DEBUG,
-    #                        filename: str = None,
-    #                        format: str = None):
-    #
-    #     logging.basicConfig(level=level.value,
-    #                         filename=filename,
-    #                         format=format,
-    #                         encoding='utf-8')
+        self.__handler_file = logging.FileHandler(filename=name)
+        self.__handler_file.setFormatter(self.__format)
+        self.__handler_file.setLevel(self.__level.value)
+
+        self.__logger.addHandler(self.__handler_file)
+
+        self.__add_handler()
+
+        return name.replace('.log', '')
+
+    def __add_handler(self):
+        self.__logger.addHandler(self.__handler_console)
+        self.__logger.addHandler(self.__handler_file)
 
 
 if __name__ == '__main__':

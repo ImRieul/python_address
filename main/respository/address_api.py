@@ -6,7 +6,7 @@ import setting
 from main.enums.address_enum import *
 
 
-class Address:
+class AddressApi:
     # 초기화 메서드
     def __init__(self, analyze_type: AnalyzeType = AnalyzeType.EXACT, **query):
         self.url = 'https://dapi.kakao.com/v2/local/search/address'
@@ -64,4 +64,4 @@ class Address:
 
 
 if __name__ == '__main__':
-    address = Address(query='대전 서구 관저로 3-8')
+    address = AddressApi(query='대전 서구 관저로 3-8')

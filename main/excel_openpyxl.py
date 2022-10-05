@@ -3,8 +3,13 @@ from __future__ import annotations
 import openpyxl
 import platform
 
-# openpyxl는 직관성이 떨어져 읽기 쉬운 방식으로 만들어봤다.
 import setting
+
+
+# openpyxl는 직관성이 떨어져 읽기 쉬운 방식으로 만들어봤다.
+# TODO
+#   1. getter, setter를 python의 방식대로 수정.
+
 from error.error_excel import *
 
 
