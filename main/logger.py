@@ -18,17 +18,18 @@ class Logger:
                  ):
 
         if format is None:
-            format = [LoggerFormat.ASCTIME, LoggerFormat.NAME, LoggerFormat.LEVELNAME, LoggerFormat.MESSAGE]
+            self.__format = [LoggerFormat.ASCTIME, LoggerFormat.NAME, LoggerFormat.LEVELNAME, LoggerFormat.MESSAGE]
 
-        self.__handler_console = logging.StreamHandler(sys.stdout)
-        self.__handler_file = logging.FileHandler(filename=f'{filename}.log')
-
+        # 기본 logger 설정
         self.__logger = logging.getLogger(config.where_function_path(1))
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(level.value)
 
-        self.__level = self.set_level(level)
-        self.__format = self.set_format(format)
-        self.__filename = self.set_filename(config.path_encoding(f'{config.root_path()}/{filename}'))
+        # handler 생성
+        self.__handler_console = logging.StreamHandler(sys.stdout)
+        self.__handler_file = logging.FileHandler(config.path_encoding(f'{config.root_path()}/{filename}'))
+
+        # handler setting
+        self.set_format(self.__format)
 
     def info(self, message: str):
         self.__logger.info(message)
@@ -45,38 +46,47 @@ class Logger:
     def error(self, message: str):
         self.__logger.error(message)
 
-    def set_level(self, level: LoggerEnum):
-        self.__handler_console.setLevel(level.value)
-        self.__handler_file.setLevel(level.value)
-
-        self.__add_handler()
-
-        return level
-
     def set_format(self, format: list[LoggerFormat]):
-        format = logging.Formatter(' - '.join(map(lambda x: x.value, format)))
+        formatter = logging.Formatter(' - '.join(map(lambda x: x.value, format)))
 
-        self.__handler_console.setFormatter(format)
-        self.__handler_file.setFormatter(format)
+        # remove
+        if len(self.__logger.handlers) > 0:
+            self.__logger.removeHandler(self.__handler_console)
+            self.__logger.removeHandler(self.__handler_file)
 
-        self.__add_handler()
+        # set format
+        self.__handler_console.setFormatter(formatter)
+        self.__handler_file.setFormatter(formatter)
 
-        return format
+        # add handler
+        self.__logger.addHandler(self.__handler_console)
+        self.__logger.addHandler(self.__handler_file)
+
 
     def set_filename(self, name: str):
         name = f'{config.path_encoding(name)}.log'
 
-        self.__handler_file = logging.FileHandler(filename=name)
-        self.__handler_file.setFormatter(self.__format)
-        self.__handler_file.setLevel(self.__level.value)
+        # remove
+        if len(self.__logger.handlers) > 0:
+            self.__logger.removeHandler(self.__handler_file)
 
+        # set name
+        self.__handler_file.set_name(name)
+
+        # add handler
         self.__logger.addHandler(self.__handler_file)
 
-        self.__add_handler()
+    def set_level(self, level: LoggerEnum):
+        # remove
+        if len(self.__logger.handlers) > 0:
+            self.__logger.removeHandler(self.__handler_console)
+            self.__logger.removeHandler(self.__handler_file)
 
-        return name.replace('.log', '')
+        # set level
+        self.__handler_console.setLevel(level.value)
+        self.__handler_file.setLevel(level.value)
 
-    def __add_handler(self):
+        # add handler
         self.__logger.addHandler(self.__handler_console)
         self.__logger.addHandler(self.__handler_file)
 
