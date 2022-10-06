@@ -18,12 +18,11 @@ class AddressRepository(BaseRepository):
         query = {'query': value}
         headers.update({'Authorization': setting.KAKAO_TOKEN})
         super(AddressRepository, self).get(query, headers)
+        self._logger.info(f'search result : {self._response}')
 
     def get_address(self) -> Address:
         if self.__address.data_type not in [AddressDataType.NOT_EXIST]:
             return self.__address
-
-        self._logger.info(f'AddressRepository response : {self._response}')
 
         result_address = Address()
 
