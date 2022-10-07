@@ -7,8 +7,10 @@ from error.error_excel import *
 from main.base_data_frame import BaseDataFrame
 
 
-# 만들고 싶은 기능
-# 엑셀 읽기, 쓰기
+# TODO
+#   1. getter, setter를 python의 방식대로 수정.
+#   2. 엑셀 읽기, 쓰기
+#   3. excel_openpyxl.py 지우기
 
 class Excel(BaseDataFrame):
     def __init__(self, name: str, sheet_name: str | None = 0,

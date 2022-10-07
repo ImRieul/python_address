@@ -1,5 +1,5 @@
 import unittest
-from main.config import where_function_path
+from config import where_function_path
 
 
 class TestWhereFunctionPath(unittest.TestCase):

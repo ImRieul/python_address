@@ -1,7 +1,7 @@
 import logging
 # import logging.config
 import sys
-import main.config as config
+import config as config
 
 from main.enums.loggerEnum import *
 
@@ -26,7 +26,7 @@ class Logger:
 
         # handler 생성
         self.__handler_console = logging.StreamHandler(sys.stdout)
-        self.__handler_file = logging.FileHandler(config.path_encoding(f'{config.root_path()}/{filename}'))
+        self.__handler_file = logging.FileHandler(config.conversion_path(f'{config.root_path()}/{filename}'))
 
         # handler setting
         self.set_format(self.__format)
@@ -64,7 +64,7 @@ class Logger:
 
 
     def set_filename(self, name: str):
-        name = f'{config.path_encoding(name)}.log'
+        name = f'{config.conversion_path(name)}.log'
 
         # remove
         if len(self.__logger.handlers) > 0:
