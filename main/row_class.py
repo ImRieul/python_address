@@ -1,21 +1,22 @@
+import pandas
+
+
 class RowClass:
-    def __init__(self, row: list):
+    def __init__(self, row: dict):
         self.empty = []
-        self.__row: list = row
+        self.__row: dict = row
 
-    @property
-    def row(self) -> list:
-        return self.__row
+    def __get__(self, instance, owner):
+        # print(instance)
+        return instance.rows_z
 
-    @row.setter
-    def row(self, value):
-        self.__row = value
+    def __set__(self, instance, value):
+        # print(instance)
+        print(value)
+        pass
 
-    def __str__(self):
-        return self.__row
 
-    def __call__(self, *args, **kwargs):
-        return self.__row
-
-    def __len__(self):
-        return len(self.__row)
+if __name__ == '__main__':
+    row_class = RowClass([1, 2, 3])
+    print(row_class.empty)
+    print(row_class.row)

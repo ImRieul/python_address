@@ -7,18 +7,19 @@ from main.row_class import RowClass
 
 
 class BaseDataFrame:
+    rows = RowClass({})
+
     def __init__(self, dataframe: pandas.DataFrame):
         self.__dataframe: pandas.DataFrame = dataframe
-        self.__rows = []
-        self.setting_row()
+        self.rows = RowClass(dataframe.to_dict('list'))
+        self.rows_z = 'hello world 1'
 
-    def setting_row(self):
-        for i in self.__dataframe.iloc:
-            self.__rows.append(RowClass(i))
-
-    @property
-    def row(self) -> list[RowClass]:
-        return self.__rows
+    def row(self, value: Union[int, str]) -> list[RowClass]:
+        if isinstance(value, int):
+            return self.__dataframe.iloc[value]
+        elif isinstance(value, str):
+            return self.__dataframe.loc[value]
+        return []
 
     # @row.setter
     # def row(self, value: Dict[int, list]):
@@ -27,17 +28,19 @@ class BaseDataFrame:
     #
     #     self.__dataframe.iloc[column_index] = rows_data
 
-    @row.setter
-    def row(self, value):
-        self.__dataframe.iloc[value[0]] = value[1]
+    # @row.setter
+    # def row(self, value):
+    #     self.__dataframe.iloc[value[0]] = value[1]
 
 
 if __name__ == '__main__':
     df = pandas.DataFrame({'a': [1, 2], 'b': [3, 4]})
     bdf = BaseDataFrame(df)
 
-    # bdf.row = 1, [22, 44]
-    print(bdf.row)
-    bdf.row(1) = [22, 44]
-    print(bdf.row[1])
+    # 이렇게 사용할 수 있으면 좋겠다
+    # bdf.row(1) = [1, 2, 3]
+    # print(bdf.row(1))
 
+    bdf.rows({'h': ['ello', 'world']})
+
+    print(1, bdf.rows)
