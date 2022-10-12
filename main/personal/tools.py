@@ -40,6 +40,7 @@ def dict_in_dict(lower: dict, upper: dict) -> bool:
     return True
 
 
+# dataframe.transpose() 를 쓰면 그냥 뒤집어진다................
 def dataframe_change_column_index(df: pandas.DataFrame, columns: list = None, index: list = None):
     change_df = pandas.DataFrame(
         pandas.DataFrame(df.to_dict('index')).to_dict('list')
