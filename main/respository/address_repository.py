@@ -1,5 +1,5 @@
 import setting
-from main.entity.address import Address
+from main.entity.model.address import Address
 from main.enums.address_enum import AnalyzeType, AddressDataType
 from main.respository.base_repository import BaseRepository
 

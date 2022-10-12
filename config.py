@@ -16,6 +16,9 @@ def conversion_path(path: str) -> str:
 
 
 def root_path(path: str = '') -> str:
+    if path != '':
+        path = '/' + path
+
     return conversion_path(__ROOT_PATH + path)
 
 
@@ -28,7 +31,7 @@ def where_function_path(deep_level: int = 1) -> str:
         return sys._getframe(1).f_code.co_name  # where_function_path를 호출한 함수
 
 
-__ROOT_PATH = conversion_path(os.path.dirname(os.path.abspath(__file__)))
+__ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
 if __name__ == '__main__':

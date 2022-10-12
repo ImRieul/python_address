@@ -1,6 +1,6 @@
 import unittest
 
-from main.base_dataframe import BaseDataFrame
+from main.entity.dataframe.base_dataframe import BaseDataFrame
 
 
 class TestRow(unittest.TestCase):

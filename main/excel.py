@@ -39,20 +39,6 @@ class Excel(BaseDataFrame):
         pass  # excel[]을 사용하는데 수정 요구가 떠서 없애는 용
 
     def __read_excel(self) -> pandas.DataFrame:
-        # if self.__sheet_name is None:
-        #     self.sheet = pandas \
-        #         .read_excel(f'{self.__path}{self.__name}',
-        #                     header=self.__index_row,
-        #                     index_col=self.__index_col) \
-        #         .fillna('')
-        # else:
-        #     self.sheet = pandas \
-        #         .read_excel(f'{self.__path}{self.__name}',
-        #                     sheet_name=self.__sheet_name,
-        #                     header=self.__index_row,
-        #                     index_col=self.__index_col) \
-        #         .fillna('')
-
         return pandas \
             .read_excel(f'{self.__path}{self.__name}',
                         header=self.__index_row,

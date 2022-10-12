@@ -7,10 +7,10 @@ class BaseDataFrame:
                  data=None,
                  index=None,
                  columns=None,
-                 dtype=None,
+                 data_type=None,
                  copy: bool | None = None,
                  ):
-        self._dataframe = pandas.DataFrame(data, index, columns, dtype, copy)
+        self._dataframe = pandas.DataFrame(data, index, columns, data_type, copy)
         self._row: WithDict = WithDict(self._dataframe.T.to_dict('list'), list(self._dataframe.columns))
         self._column: WithDict = WithDict(self._dataframe.to_dict('list'), list(self._dataframe.index))
 
@@ -50,7 +50,7 @@ class BaseDataFrame:
 class WithDict(dict):
     def __init__(self, dic: dict, index: list = None):
         super(WithDict, self).__init__(dic)
-        self._index = index if len(index) == len(dic) else [i for i in range(len(list(dic.values())[0]))]
+        self._index = index if len(index) == len(list(dic.values())[0]) else [i for i in range(len(list(dic.values())[0]))]
         self._keys = list(dic.keys())
 
     def __getitem__(self, item):
