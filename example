@@ -1,0 +1,21 @@
+2022-10-14 11:19:13,511 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:20:45,762 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:22:14,928 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:22:27,448 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:23:32,843 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:26:52,085 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:27:10,554 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 11:27:29,006 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 12:51:49,986 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 12:56:17,456 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 12:56:31,900 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 14:41:51,227 - <module> - INFO - hello info
+2022-10-14 14:41:51,227 - <module> - DEBUG - hello debug
+2022-10-14 14:41:51,227 - <module> - CRITICAL - input level critical, set level warning
+2022-10-14 14:43:58,577 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 14:44:21,788 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 14:44:24,105 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 14:44:28,557 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 14:44:30,742 - where_function_path - INFO - search result : <Response [200]>
+2022-10-14 14:44:34,405 - __init__ - INFO - search result : <Response [200]>
+2022-10-14 14:47:44,008 - __init__ - INFO - search result : <Response [200]>

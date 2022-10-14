@@ -1,7 +1,10 @@
 from __future__ import annotations
 import pandas
+import pandas.core.indexing
 
 
+# TODO
+#   1. dict <-> dataframe은 dataframe만 사용하는 것보다 리소스 소모가 크다 dataframe로만 원하는 기능을 구현할 수 있는지 알아보자
 class BaseDataFrame:
     def __init__(self,
                  data=None,

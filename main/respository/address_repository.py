@@ -10,18 +10,26 @@ class AddressRepository(BaseRepository):
                  ):
         url = 'https://dapi.kakao.com/v2/local/search/address'
         super(AddressRepository, self).__init__(url)
-        self.__analyze_type = analyze_type
-        self.__address = Address()
+        self._analyze_type = analyze_type
+        self._address = Address()
 
-    def search(self, value: str, **headers):
-        query = {'query': value}
+    def _search(self, query: dict, **headers):
+        if query.get('analyze_type') is None:
+            query.update({'analyze_type': AnalyzeType.EXACT.value})
+        else:
+            query.update({'analyze_type': query['analyze_type'].value})
+
         headers.update({'Authorization': setting.KAKAO_TOKEN})
         super(AddressRepository, self).get(query, headers)
         self._logger.info(f'search result : {self._response}')
 
-    def get_address(self) -> Address:
-        if self.__address.data_type not in [AddressDataType.NOT_EXIST]:
-            return self.__address
+    def find_by_search(self, search: str, **headers) -> Address:
+        query = {'query': search}
+
+        self._search(query, **headers)
+
+        if self._address.data_type not in [AddressDataType.NOT_EXIST]:
+            return self._address
 
         result_address = Address()
 
@@ -59,11 +67,10 @@ class AddressRepository(BaseRepository):
             result_address.x = response_road_address.get('x')
             result_address.y = response_road_address.get('y')
 
-        self.__address = result_address
+        self._address = result_address
         return result_address
 
 
 if __name__ == '__main__':
     address = AddressRepository()
-    address.search('배재로 128')
-    print(address.get_address())
+    print(address.find_by_search('배재로 128'))

@@ -217,3 +217,8 @@ class Address:
     def is_underground(self, value: bool):
         self.__is_underground = value
 
+    def __repr__(self):
+        return self.__dict__
+
+    def __str__(self):
+        return str(self.__dict__)

@@ -56,6 +56,8 @@ class TestRow(unittest.TestCase):
         # then
         self.assertEqual(row_check, [123, 456])
 
+
+class TestColumn(unittest.TestCase):
     def test_column(self):
         # given
         df = BaseDataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]}, index=['ㄱ', 'ㄴ', 'ㄷ'])

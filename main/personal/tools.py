@@ -15,10 +15,15 @@ def list_flat(list_mix: list, this: list = None) -> list:
     return this
 
 
-def list_insert(data: list, insert_data: list, start_index: int = None) -> list:
+def list_insert(data: list, insert_data: list, start_index: int = None, delete: bool = False) -> list:
     if start_index is None:
         start_index = len(data)
-    data.insert(start_index, insert_data)
+
+    for index, value in enumerate(insert_data):
+        if delete:
+            data.pop(start_index + index)
+        data.insert(start_index + index, value)
+
     return list_flat(data)
 
 
