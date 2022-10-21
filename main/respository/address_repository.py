@@ -79,6 +79,13 @@ class AddressRepository(BaseRepository):
 
         record.save(copy=False)
 
+    def _diary_save(self, address: Address):
+        diary = Excel('address_diary.xlsx')
+        diary.column['region_1depth_name'].append(address.region_1depth_name)
+        diary.column['region_2depth_name'].append(address.region_2depth_name)
+        diary.column['legal_dong'].append(address.legal_dong)
+        diary.column['road_name'].append(address.road_name)
+
     def find_by_search(self, search: str, **headers) -> Address:
         query = {'query': search}
 
