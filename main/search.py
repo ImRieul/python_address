@@ -106,7 +106,6 @@ def search_yourself(fail_query: str, fail_address: AddressApi, excel_index: int,
         if search_address.is_search_type(AddressDataType.REGION_ADDR, AddressDataType.ROAD_ADDR) \
         else search_yourself(query, search_address, excel_index, count + 1)
 
-
 # if __name__ == '__main__':
 #     # given
 #     file_name = 'sample.xlsx'  # 파일 이름

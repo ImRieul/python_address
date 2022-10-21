@@ -1,6 +1,9 @@
 import os.path
+from typing import Union
 
 import pandas
+
+dict_values = type({}.values())
 
 
 def list_flat(list_mix: list, this: list = None) -> list:
@@ -27,6 +30,19 @@ def list_insert(data: list, insert_data: list, start_index: int = None, delete: 
     return list_flat(data)
 
 
+def list_max(lists: Union[list[list], dict_values]):
+    if isinstance(lists, dict_values):
+        lists = list(lists)
+    rank_len = list(map(lambda x: len(x), lists))
+    first_list_index = 0
+    first_list_len = rank_len[first_list_index]
+    for index, value in enumerate(rank_len):
+        if first_list_len < value:
+            first_list_index = index
+
+    return lists[first_list_index]
+
+
 def dict_in_dict(lower: dict, upper: dict) -> bool:
     lower = {key: value for key, value in lower.items()}
 
@@ -45,13 +61,25 @@ def dict_in_dict(lower: dict, upper: dict) -> bool:
     return True
 
 
-# dataframe.transpose() 를 쓰면 그냥 뒤집어진다................
-def dataframe_change_column_index(df: pandas.DataFrame, columns: list = None, index: list = None):
-    change_df = pandas.DataFrame(
-        pandas.DataFrame(df.to_dict('index')).to_dict('list')
-    )
+def replace(data: str, old_list: list, new_list) -> str:
+    """
+    문자열에 바꾸고 싶을 문자를 한꺼번에 두기 위해 만들었습니다.
+    :param data: 기준이 되는 문자열
+    :param old: 바꾸고 싶은 문자들
+    :param new: 바꿀 문자
+    :return:
+    """
+    if not isinstance(data, str):
+        return ''
 
-    change_df.columns = df.index if columns is None else columns
-    change_df.index = df.columns if index is None else index
+    for index, old in enumerate(old_list):
+        data.replace(old, new_list[index])
 
-    return change_df
+    return data
+
+
+def str_cutting(data: str, cut_len, **option) -> str:
+    if option.get('split') is None:
+        option['split'] = ''
+    split_str = str.split(' ')
+

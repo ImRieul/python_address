@@ -1,5 +1,6 @@
 from typing import Union
 
+import numpy as np
 import pandas
 
 import config
@@ -52,14 +53,35 @@ class ExcelConfig:
     def dataframe(self) -> pandas.DataFrame:
         return self._dataframe
 
+    @dataframe.setter
+    def dataframe(self, value):
+        self._dataframe = value
+
 
 class Excel(BaseDataFrame):
-    def __init__(self, excel_config: ExcelConfig):
+    def __init__(self, excel_config: Union[ExcelConfig, str]):
+        if isinstance(excel_config, str):
+            excel_config = ExcelConfig(excel_config)
+
+        # excel_config.dataframe.column = list(map(
+        #     lambda param: param[0] if pandas.isna(param[1]) else param[1], enumerate(excel_config.dataframe.columns)
+        # ))
+
+        # index(row)가 nan인 경우 순서대로 index 삽입, excel에서 row를 입력하지 않는 경우가 있는데, 계속 경고가 떠서 만들었습니다.
+        if np.NaN in excel_config.dataframe.index:
+            excel_config.dataframe.index = list(map(
+                lambda param: param[0] if pandas.isna(param[1]) else param[1], enumerate(excel_config.dataframe.index)
+            ))
+
         super().__init__(excel_config.dataframe)
+
         self._config = excel_config
 
-    def save(self):
-        self._dataframe.to_excel(self._config.root_file_name.replace('.', '_copy.'))
+    def save(self, copy: bool = True):
+        if not copy:
+            self._dataframe.to_excel(self._config.root_file_name)
+        else:
+            self._dataframe.to_excel(self._config.root_file_name.replace('.', '_copy.'))
 
 
 if __name__ == '__main__':
