@@ -32,7 +32,46 @@ class BaseDataFrame:
         self._update()
         return self._column
 
+    def set_row_empty(self,
+                      row_name,
+                      insert_data,
+                      ):
+        if self._row.get(row_name) is None:
+            raise ValueError(f'{row_name} is not exist in row names')
+
+        if '' in self._row[row_name]:
+            start_index = self._row.get(row_name).index('')
+        else:
+            start_index = None
+
+        self._row[row_name] = tools.list_insert(self._row.get(row_name),
+                                                [insert_data],
+                                                start_index,
+                                                True)
+
+    def set_column_empty(self,
+                         column_name,
+                         insert_data,
+                         ):
+
+        if self._column.get(column_name) is None:
+            raise ValueError(f'{column_name} is not exist in column names')
+
+        if '' in self._column[column_name]:
+            start_index = self._column.get(column_name).index('')
+        else:
+            start_index = None
+
+        self._column[column_name] = tools.list_insert(self._column.get(column_name),
+                                                [insert_data],
+                                                start_index,
+                                                True)
+
     def _update(self):
+        """
+        self._row, self.column와 self._dataframe하고 연동하기 위한
+        :return:
+        """
         update_row = pandas.DataFrame.from_dict(self._row, orient='index', columns=self._row.__index__())
         update_column = pandas.DataFrame(self._column, index=self._column.__index__())
 

@@ -72,19 +72,28 @@ class AddressRepository(BaseRepository):
 
         return address.road_address if address.road_name is not None else address.lot_address
 
-    def _record_save(self, address: Address):
+    def _record_save(self, search: str, address: Address):
         record = Excel('address_record.xlsx')
-        record.column['lot_address'].append(address.lot_address)
-        record.column['load_address'].append(address.lot_address)
-
-        record.save(copy=False)
+        if search not in record.column['search']:
+            record.row[len(record.row)] = [search,
+                                           address.road_address,
+                                           address.lot_address
+                                           ]
+            record.save(copy=False)
 
     def _diary_save(self, address: Address):
         diary = Excel('address_diary.xlsx')
-        diary.column['region_1depth_name'].append(address.region_1depth_name)
-        diary.column['region_2depth_name'].append(address.region_2depth_name)
-        diary.column['legal_dong'].append(address.legal_dong)
-        diary.column['road_name'].append(address.road_name)
+
+        if address.region_1depth_name not in diary.column['region_1depth_name']:
+            diary.set_column_empty('region_1depth_name', address.region_1depth_name)
+        if address.region_2depth_name not in diary.column['region_2depth_name']:
+            diary.set_column_empty('region_2depth_name', address.region_1depth_name)
+        if address.legal_dong not in diary.column['legal_dong']:
+            diary.set_column_empty('legal_dong', address.legal_dong)
+        if address.road_name not in diary.column['road_name']:
+            diary.set_column_empty('road_name', address.road_name)
+
+        diary.save(copy=False)
 
     def find_by_search(self, search: str, **headers) -> Address:
         query = {'query': search}
@@ -131,10 +140,12 @@ class AddressRepository(BaseRepository):
             result_address.y = response_road_address.get('y')
 
         self._address = result_address
+        self._record_save(search, result_address)
+        self._diary_save(result_address)
 
         return result_address
 
 
 if __name__ == '__main__':
     address = AddressRepository()
-    print(address.find_by_search('배재로 128'))
+    print(address.find_by_search('대전 서구 둔산대로 169'))

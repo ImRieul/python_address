@@ -23,7 +23,7 @@ def list_insert(data: list, insert_data: list, start_index: int = None, delete: 
         start_index = len(data)
 
     for index, value in enumerate(insert_data):
-        if delete:
+        if delete and len(data) > start_index + index:
             data.pop(start_index + index)
         data.insert(start_index + index, value)
 
@@ -31,6 +31,9 @@ def list_insert(data: list, insert_data: list, start_index: int = None, delete: 
 
 
 def list_max(lists: Union[list[list], dict_values]):
+    if len(lists) == 0:
+        return []
+
     if isinstance(lists, dict_values):
         lists = list(lists)
     rank_len = list(map(lambda x: len(x), lists))
