@@ -36,36 +36,38 @@ class BaseDataFrame:
                       row_name,
                       insert_data,
                       ):
-        if self._row.get(row_name) is None:
+        if self._row.get(row_name) is None or row_name is None:
             raise ValueError(f'{row_name} is not exist in row names')
 
-        if '' in self._row[row_name]:
-            start_index = self._row.get(row_name).index('')
-        else:
-            start_index = None
-
-        self._row[row_name] = tools.list_insert(self._row.get(row_name),
-                                                [insert_data],
-                                                start_index,
-                                                True)
+        self._row[row_name] = self._set_data_empty(self._row.get(row_name),
+                                                   insert_data,
+                                                   )
 
     def set_column_empty(self,
                          column_name,
                          insert_data,
                          ):
 
-        if self._column.get(column_name) is None:
+        if self._column.get(column_name) is None or column_name is None:
             raise ValueError(f'{column_name} is not exist in column names')
 
-        if '' in self._column[column_name]:
-            start_index = self._column.get(column_name).index('')
+        self._column[column_name] = self._set_data_empty(self._column.get(column_name),
+                                                         insert_data,
+                                                         )
+
+    def _set_data_empty(self,
+                        row_or_column_data: list,
+                        insert_data,
+                        ) -> list:
+        if '' in row_or_column_data:
+            start_index = row_or_column_data.index('')
         else:
             start_index = None
 
-        self._column[column_name] = tools.list_insert(self._column.get(column_name),
-                                                [insert_data],
-                                                start_index,
-                                                True)
+        return tools.list_insert(row_or_column_data,
+                                 [insert_data],
+                                 start_index,
+                                 True)
 
     def _update(self):
         """

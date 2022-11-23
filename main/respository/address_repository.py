@@ -1,3 +1,5 @@
+import re
+
 import setting
 from main.entity.model.address import Address
 from main.enums.address_enum import AnalyzeType, AddressDataType
@@ -25,9 +27,6 @@ class AddressRepository(BaseRepository):
         super(AddressRepository, self).get(query, headers)
         self._logger.info(f'search result : {self._response}')
 
-    def slice_address(self, address_name: str):
-        pass
-
     # first
     def _record(self, search: str) -> str:
         record = Excel('address_record.xlsx')
@@ -38,17 +37,20 @@ class AddressRepository(BaseRepository):
 
             return load_address if load_address != '' else lot_address
 
+        return search
+
     # second
     def _diary(self, search: str) -> str:
         address = Address()
-        diary = Excel('address_diary.xlsx')
+        excel_diary = Excel('address_diary.xlsx')
 
-        address.region_1depth_name = [x for x in diary.column['region_1depth_name'] if search.find(x) != -1][0]
-        address.region_2depth_name = [x for x in diary.column['region_2depth_name'] if search.find(x) != -1][0]
-        legal_dong = [x for x in diary.column['legal_dong'] if search.find(x) != -1]
+        address.region_1depth_name = [x for x in excel_diary.column['region_1depth_name'] if search.find(x) != -1][0]
+        address.region_2depth_name = [x for x in excel_diary.column['region_2depth_name'] if search.find(x) != -1][0]
+        legal_dong = [x for x in excel_diary.column['legal_dong'] if x != '' and search.find(x) != -1]
+        road_name = [x for x in excel_diary.column['road_name'] if x != '' and search.find(x) != 1]
 
         # 지번 주소면
-        if '' not in legal_dong:
+        if len(legal_dong) != 0:
             address.legal_dong = legal_dong[0]
             if search.find('-') == -1:
                 lot_numbers = [x for x in search.split(' ') if x.isdigit()]
@@ -59,8 +61,8 @@ class AddressRepository(BaseRepository):
             address.lot_main_number = lot_numbers[0]
 
         # 도로명 주소이면
-        else:
-            address.road_name = [x for x in diary.column['road_name'] if search.find(x) != -1][0]
+        elif len(road_name) != 0:
+            address.road_name = road_name[0]
             if search.find('번길') == -1:
                 road_main_number = [x for x in search.split(' ') if x.isdigit()]
                 address.road_main_number = road_main_number[0]
@@ -69,17 +71,43 @@ class AddressRepository(BaseRepository):
                 road_sub_number = search.split(' ')[search.split(' ').index(road_main_number) + 1]
                 address.road_main_number = road_main_number
                 address.road_sub_number = road_sub_number
+        if address.region_1depth_name == '' \
+                or address.region_2depth_name == '' \
+                or (address.legal_dong == '' or address.road_name):
+            return search
+        else:
+            return address.road_address if address.road_name is not None else address.lot_address
 
-        return address.road_address if address.road_name is not None else address.lot_address
+    # third
+    def _slice(self, search: str):
+        excel_slice = Excel('address_slice.xlsx')
+
+        for index, word in enumerate(excel_slice.column['word']):
+            if search.find(word) != -1:
+                # end option. 끝 단어가 word로 끝나는지 검사.
+                if excel_slice.column['end'][index] == 1:
+                    if search[search.find(word) + len(word)] != ' ':
+                        continue
+
+                # only option.
+                # 값이 있으면 해당 단어 뒤로 날리고
+                # 값이 없으면 해당 단어를 포함한 값을 날린다.
+                if excel_slice.column['only'][index] == 1:
+                    search = ''.join(search.split(word)[0])
+                else:
+                    word_slice = [index for index, value in enumerate(search.split(' ')) if value.find(word) != -1][0]
+                    search = ' '.join(search.split(' ')[:word_slice])
+
+        return search
 
     def _record_save(self, search: str, address: Address):
-        record = Excel('address_record.xlsx')
-        if search not in record.column['search']:
-            record.row[len(record.row)] = [search,
-                                           address.road_address,
-                                           address.lot_address
-                                           ]
-            record.save(copy=False)
+        excel_record = Excel('address_record.xlsx')
+        if search not in excel_record.column['search']:
+            excel_record.row[len(excel_record.row)] = [search,
+                                                       address.road_address,
+                                                       address.lot_address
+                                                       ]
+            excel_record.save(copy=False)
 
     def _diary_save(self, address: Address):
         diary = Excel('address_diary.xlsx')
@@ -96,6 +124,12 @@ class AddressRepository(BaseRepository):
         diary.save(copy=False)
 
     def find_by_search(self, search: str, **headers) -> Address:
+        search = self._slice(
+            self._diary(
+                self._record(search)
+            )
+        )
+
         query = {'query': search}
 
         self._search(query, **headers)
@@ -147,5 +181,6 @@ class AddressRepository(BaseRepository):
 
 
 if __name__ == '__main__':
-    address = AddressRepository()
-    print(address.find_by_search('대전 서구 둔산대로 169'))
+    address_repository = AddressRepository()
+    address = address_repository.find_by_search('대전 서구 둔산대로 169')
+    print(address.road_address_fullname)

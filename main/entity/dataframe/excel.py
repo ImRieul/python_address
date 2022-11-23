@@ -17,7 +17,6 @@ class ExcelConfig:
                  standard_row: int = 1,
                  standard_column: int = 1,
                  ):
-
         self._file_name = file_name
         self._root_file_name = config.root_path(file_name)
         self._sheet_name = sheet_name
@@ -59,29 +58,37 @@ class ExcelConfig:
 
 
 class Excel(BaseDataFrame):
-    def __init__(self, excel_config: Union[ExcelConfig, str]):
-        if isinstance(excel_config, str):
-            excel_config = ExcelConfig(excel_config)
+    def __init__(self, config: Union[ExcelConfig, str]):
+        if isinstance(config, str):
+            config = ExcelConfig(config)
 
         # excel_config.dataframe.column = list(map(
         #     lambda param: param[0] if pandas.isna(param[1]) else param[1], enumerate(excel_config.dataframe.columns)
         # ))
 
         # index(row)가 nan인 경우 순서대로 index 삽입, excel에서 row를 입력하지 않는 경우가 있는데, 계속 경고가 떠서 만들었습니다.
-        if np.NaN in excel_config.dataframe.index:
-            excel_config.dataframe.index = list(map(
-                lambda param: param[0] if pandas.isna(param[1]) else param[1], enumerate(excel_config.dataframe.index)
+        if np.NaN in config.dataframe.index:
+            config.dataframe.index = list(map(
+                lambda param: param[0] if pandas.isna(param[1]) else param[1], enumerate(config.dataframe.index)
             ))
 
-        super().__init__(excel_config.dataframe)
+        super().__init__(config.dataframe)
 
-        self._config = excel_config
+        self._config = config
 
     def save(self, copy: bool = True):
         if not copy:
             self._dataframe.to_excel(self._config.root_file_name)
         else:
             self._dataframe.to_excel(self._config.root_file_name.replace('.', '_copy.'))
+
+    # 테스트 코드 필요
+    def column_with_index(self, column_name) -> list[tuple]:
+        return [(i, x) for i, x in enumerate(self.column[column_name])]
+
+    # 테스트 코드 필요
+    def row_with_index(self, row_name) -> list[tuple]:
+        return [(i, x) for i, x in enumerate(self.row[row_name])]
 
 
 if __name__ == '__main__':
